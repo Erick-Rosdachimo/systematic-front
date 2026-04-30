@@ -112,7 +112,13 @@ const PaginationControl: React.FC<PaginationControlProps> = ({
         order={{ base: 3, md: 2 }}
       >
         <Text whiteSpace="nowrap">
-          {t("pagination.page") + " " + String(currentPage).padStart(numberOfCases, "0") + t("pagination.of") + " " + quantityOfPages}
+          {t("pagination.page") +
+            " " +
+            String(currentPage).padStart(numberOfCases, "0") +
+            " " +
+            t("pagination.of") +
+            " " +
+            quantityOfPages}
         </Text>
         {isPaginationEnabled &&
           actionButtons.map(({ icon, action, label }, index) => (
