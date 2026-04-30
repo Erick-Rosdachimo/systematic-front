@@ -26,14 +26,18 @@ type Section = {
   tooltip?: string;
 };
 
-const getQuestionTooltip = (code: string, t: any): string => {
+const getQuestionTooltip = (code: string): string => {
   const num = code.replace(/[^0-9]/g, "");
   if (code.startsWith("EQ")) return `Extraction Question ${num}`;
   if (code.startsWith("RBQ")) return `Risk of Bias Question ${num}`;
   return code;
 };
 
-export default function SectionMenu({ onSelect, selected, questions = [] }: MenuProps) {
+export default function SectionMenu({
+  onSelect,
+  selected,
+  questions = [],
+}: MenuProps) {
   const { t } = useTranslation("review/summarization-graphics");
 
   const staticSections: Section[] = [
@@ -82,16 +86,19 @@ export default function SectionMenu({ onSelect, selected, questions = [] }: Menu
       value: q.questionId,
       group: "Form Questions",
       displayName: `Form Question - ${q.code}`,
-      tooltip: getQuestionTooltip(q.code, t),
+      tooltip: getQuestionTooltip(q.code),
     })),
   ];
 
-  const groupedSections = allSections.reduce((acc, section) => {
-    const group = section.group || "ungrouped";
-    if (!acc[group]) acc[group] = [];
-    acc[group].push(section);
-    return acc;
-  }, {} as Record<string, Section[]>);
+  const groupedSections = allSections.reduce(
+    (acc, section) => {
+      const group = section.group || "ungrouped";
+      if (!acc[group]) acc[group] = [];
+      acc[group].push(section);
+      return acc;
+    },
+    {} as Record<string, Section[]>,
+  );
 
   const current = allSections.find((s) => s.value === selected);
 
@@ -107,7 +114,9 @@ export default function SectionMenu({ onSelect, selected, questions = [] }: Menu
       >
         <Flex w="100%" justifyContent="space-between" alignItems="center">
           <Box>
-            {current ? (current.displayName || current.label) : t("sectionMenu.overview")}
+            {current
+              ? current.displayName || current.label
+              : t("sectionMenu.overview")}
           </Box>
           <ChevronDownIcon fontSize="1.25rem" />
         </Flex>
@@ -128,7 +137,10 @@ export default function SectionMenu({ onSelect, selected, questions = [] }: Menu
             <Box key={groupName}>
               {!isUngrouped && (
                 <MenuGroup
-                  title={t(`sectionMenu.groups.${groupName.toLowerCase().replace(" ", "_")}`, groupName)}
+                  title={t(
+                    `sectionMenu.groups.${groupName.toLowerCase().replace(" ", "_")}`,
+                    groupName,
+                  )}
                   bg="#EBF0F3"
                   ml="3"
                   fontSize="md"
