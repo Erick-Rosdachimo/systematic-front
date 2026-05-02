@@ -97,7 +97,7 @@ export default function Graphics() {
           </Text>
           <Text fontSize="19px" color="gray.600">
             {t("graphicsArea.instruction") === "graphicsArea.instruction" 
-              ? "Switch between sections above to view specific data or keep the overview." 
+              ? "Choose a section from the menu to filter the dashboard results." 
               : t("graphicsArea.instruction")}
           </Text>
         </Flex>

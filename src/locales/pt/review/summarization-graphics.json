@@ -8,8 +8,7 @@
         "endYear": "Ano de Término"
     },
     "sectionMenu": {
-        "overview": "Visão Geral",
-        "chooseSection": "Visão Geral",
+        "chooseSection": "Escolher Seção",
         "sections": {
             "searchSources": "Fontes de Busca",
             "s1InclusionCriteria": "Critérios de Inclusão",
@@ -21,6 +20,7 @@
             "formQuestions": "Questões do Formulário"
         },
         "groups": {
+            "overview": "Visão Geral",
             "first_selection": "Primeira Seleção",
             "second_selection": "Segunda Seleção",
             "form_questions": "Perguntas do Formulário"
