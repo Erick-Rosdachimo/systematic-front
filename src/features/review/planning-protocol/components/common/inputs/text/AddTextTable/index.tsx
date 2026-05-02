@@ -9,9 +9,10 @@ interface AddTextTableProps {
   placeholder: string;
   referencePrefix?: string;
   enableReferenceCode?: boolean;
+  tableHeight?: string;
 }
 
-export default function AddTextTable({ text, placeholder, referencePrefix = "", enableReferenceCode = true }: AddTextTableProps) {
+export default function AddTextTable({ text, placeholder, referencePrefix = "", enableReferenceCode = true, tableHeight }: AddTextTableProps) {
   const { AddText, handleAddText, setAddText } = useAddText(text);
   const { handleDeleteText } = useDeleteText(text);
   return (
@@ -31,6 +32,7 @@ export default function AddTextTable({ text, placeholder, referencePrefix = "", 
           referencePrefix={referencePrefix}
           enableReferenceCode={enableReferenceCode}
           maxLength={7}
+          tableHeight={tableHeight}
         />
       </FormControl>
     </FormControl>
