@@ -87,6 +87,7 @@ export default function ResearchQuestions() {
                 placeholder={t("researchQuestions.secondaryQuestions.placeholder")}
                 referencePrefix="RQ"
                 enableReferenceCode={true}
+                tableHeight="400px"
               />
             </Flex>
           </AccordionPanel>
