@@ -54,10 +54,8 @@ export default function AddResearcher() {
   return (
     <Flex justify="center" py={2}>
       <Flex gap={2} align="center" width="28rem" position="relative">
-        {/* Add Researcher Input */}
         <Input style = {{ backgroundColor: researcherChosen ? "#C9D9E5" : "#ffffffff" }} value={inputText} placeholder="Add a researcher" flex="1" minW={0} size="md" onChange = {handleInputChange} onFocus={() => setSuggestionsOpen(true)} onBlur={() => setSuggestionsOpen(false)}/>
         
-        {/* Suggestions */}
         {suggestionsOpen && (
             <Box position="absolute" width="25rem" top="100%" mt={1} bg="white" border="1px solid" borderColor="gray.300" borderRadius="md">
               {selectedPotentialResearchers.length > 0 ? (
@@ -90,7 +88,6 @@ export default function AddResearcher() {
         </Box>
         )}
 
-        {/* Add button */}
         <EventButton
           style={{opacity: researcherChosen ? 1 : 0.30}}
           w="40px"
