@@ -114,6 +114,7 @@ export default function LayoutFactory({
         handleHeaderClick={handleHeaderClick}
         onTablePageChange={onTablePageChange}
         extraParams={extraParams}
+        handleChangeLayout={handleChangeLayout} 
       />
     ),
 
@@ -130,6 +131,7 @@ export default function LayoutFactory({
         handleHeaderClick={handleHeaderClick}
         onTablePageChange={onTablePageChange}
         extraParams={extraParams}
+        handleChangeLayout={handleChangeLayout} 
       />
     ),
 

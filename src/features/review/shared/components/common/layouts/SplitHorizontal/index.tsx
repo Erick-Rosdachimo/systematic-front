@@ -33,6 +33,8 @@ interface HorizontalProps {
   reloadArticles: KeyedMutator<SelectionArticles>;
   onTablePageChange: (page: number) => void;
   extraParams?: Record<string, any>;
+
+  handleChangeLayout?: (layout: any) => void;
 }
 
 export const SplitHorizontal: React.FC<HorizontalProps> = ({
@@ -47,6 +49,7 @@ export const SplitHorizontal: React.FC<HorizontalProps> = ({
   reloadArticles,
   onTablePageChange,
   extraParams = {},
+  handleChangeLayout,
 }) => {
   const motionStyle = {
     width: "100%",
@@ -66,6 +69,7 @@ export const SplitHorizontal: React.FC<HorizontalProps> = ({
         pageSize={pagination.itensPerPage}
         onTablePageChange={onTablePageChange}
         extraParams={extraParams}
+        handleChangeLayout={handleChangeLayout}
       />
     </Box>
   );
