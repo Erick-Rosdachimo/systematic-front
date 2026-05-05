@@ -44,38 +44,41 @@ export default function SectionMenu({
     {
       label: t("sectionMenu.sections.searchSources"),
       value: "Search Sources",
+      group: "Overview",
+    },
+    {
+      label: t("sectionMenu.sections.studiesFunnel"),
+      value: "Studies Funnel",
+      group: "Overview",
+    },
+    {
+      label: t("sectionMenu.sections.includedStudies"),
+      value: "Included Studies",
+      group: "Overview",
     },
     {
       label: t("sectionMenu.sections.s1InclusionCriteria"),
       value: "S1_Inclusion Criteria",
       group: "First Selection",
-      displayName: `First Selection - ${t("sectionMenu.sections.s1InclusionCriteria")}`,
+      displayName: `${t("sectionMenu.groups.first_selection")} - ${t("sectionMenu.sections.s1InclusionCriteria")}`,
     },
     {
       label: t("sectionMenu.sections.s1ExclusionCriteria"),
       value: "S1_Exclusion Criteria",
       group: "First Selection",
-      displayName: `First Selection - ${t("sectionMenu.sections.s1ExclusionCriteria")}`,
+      displayName: `${t("sectionMenu.groups.first_selection")} - ${t("sectionMenu.sections.s1ExclusionCriteria")}`,
     },
     {
       label: t("sectionMenu.sections.s2InclusionCriteria"),
       value: "S2_Inclusion Criteria",
       group: "Second Selection",
-      displayName: `Second Selection - ${t("sectionMenu.sections.s2InclusionCriteria")}`,
+      displayName: `${t("sectionMenu.groups.second_selection")} - ${t("sectionMenu.sections.s2InclusionCriteria")}`,
     },
     {
       label: t("sectionMenu.sections.s2ExclusionCriteria"),
       value: "S2_Exclusion Criteria",
       group: "Second Selection",
-      displayName: `Second Selection - ${t("sectionMenu.sections.s2ExclusionCriteria")}`,
-    },
-    {
-      label: t("sectionMenu.sections.studiesFunnel"),
-      value: "Studies Funnel",
-    },
-    {
-      label: t("sectionMenu.sections.includedStudies"),
-      value: "Included Studies",
+      displayName: `${t("sectionMenu.groups.second_selection")} - ${t("sectionMenu.sections.s2ExclusionCriteria")}`,
     },
   ];
 
@@ -85,7 +88,7 @@ export default function SectionMenu({
       label: q.code,
       value: q.questionId,
       group: "Form Questions",
-      displayName: `Form Question - ${q.code}`,
+      displayName: q.code,
       tooltip: getQuestionTooltip(q.code),
     })),
   ];
@@ -116,7 +119,7 @@ export default function SectionMenu({
           <Box>
             {current
               ? current.displayName || current.label
-              : t("sectionMenu.overview")}
+              : t("sectionMenu.chooseSection")}
           </Box>
           <ChevronDownIcon fontSize="1.25rem" />
         </Flex>
@@ -130,48 +133,42 @@ export default function SectionMenu({
         overflowY="auto"
         overflowX="hidden"
       >
-        {Object.entries(groupedSections).map(([groupName, items]) => {
-          const isUngrouped = groupName === "ungrouped";
-
-          return (
-            <Box key={groupName}>
-              {!isUngrouped && (
-                <MenuGroup
-                  title={t(
-                    `sectionMenu.groups.${groupName.toLowerCase().replace(" ", "_")}`,
-                    groupName,
-                  )}
-                  bg="#EBF0F3"
-                  ml="3"
-                  fontSize="md"
-                  fontWeight="bold"
-                />
+        {Object.entries(groupedSections).map(([groupName, items]) => (
+          <Box key={groupName}>
+            <MenuGroup
+              title={t(
+                `sectionMenu.groups.${groupName.toLowerCase().replace(" ", "_")}`,
+                groupName,
               )}
-              {items.map((item) => (
-                <Tooltip
-                  key={item.value}
-                  label={item.tooltip || ""}
-                  placement="left"
-                  hasArrow
-                  isDisabled={!item.tooltip}
-                  bg="#2E4B6C"
-                  color="white"
-                  borderRadius="md"
-                  fontSize="sm"
+              bg="#EBF0F3"
+              ml="3"
+              fontSize="md"
+              fontWeight="bold"
+            />
+            {items.map((item) => (
+              <Tooltip
+                key={item.value}
+                label={item.tooltip || ""}
+                placement="left"
+                hasArrow
+                isDisabled={!item.tooltip}
+                bg="#2E4B6C"
+                color="white"
+                borderRadius="md"
+                fontSize="sm"
+              >
+                <MenuItem
+                  onClick={() => onSelect(item.value)}
+                  ml="1"
+                  bg={selected === item.value ? "blue.100" : "transparent"}
+                  _hover={{ bg: "blue.200" }}
                 >
-                  <MenuItem
-                    onClick={() => onSelect(item.value)}
-                    ml={isUngrouped ? "0" : "1"}
-                    bg={selected === item.value ? "blue.100" : "transparent"}
-                    _hover={{ bg: "blue.200" }}
-                  >
-                    {item.label}
-                  </MenuItem>
-                </Tooltip>
-              ))}
-            </Box>
-          );
-        })}
+                  {item.label}
+                </MenuItem>
+              </Tooltip>
+            ))}
+          </Box>
+        ))}
       </MenuList>
     </Menu>
   );

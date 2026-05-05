@@ -1,14 +1,13 @@
 {
     "header": "Graphics",
     "filtersArea": {
-        "heading":"Filters Area",
+        "heading": "Filters Area",
         "sources": "Sources",
         "criteria": "Criteria",
         "startYear": "Start Year",
         "endYear": "End Year"
     },
     "sectionMenu": {
-      "overview": "Overview",
       "chooseSection": "Choose Section",
       "sections": {
         "searchSources": "Search Sources",
@@ -21,8 +20,10 @@
         "formQuestions": "Form Questions"
       },
       "groups": {
+        "overview": "Overview",
         "first_selection": "First Selection",
-        "second_selection": "Second Selection"
+        "second_selection": "Second Selection",
+        "form_questions": "Form Questions"
       }
     },
     "selectMenu": {
