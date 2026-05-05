@@ -68,5 +68,9 @@
                 "update": "Update"
             }
         }
+    },
+    "searchSessions": {
+        "header": "Search Sessions",
+        "back": "Back"
     }
 }
