@@ -6,6 +6,7 @@
         "button": "Ir para o registro de base de dados"
     },
     "dataBaseCard": {
+        "addSession": "Adicionar Sessão",
         "deleteDatabaseModal": {
             "toasts": {
                 "incorrectName": {
@@ -34,7 +35,7 @@
             "date": "Data",
             "studies": "Estudos",
             "actions": "Ações",
-            "notFound": "Estudos não encontrados"
+            "notFound": "Nenhuma sessão encontrada para essa base de dados."
         },
         "identificationModal": {
             "heading": {
