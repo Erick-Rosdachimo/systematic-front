@@ -17,6 +17,7 @@ import PickManyModal from "../../modals/PickManyModal";
 import LabeledScaleModal from "../../modals/LabeledScaleModal";
 import useValidatorSQLInjection from "@features/shared/hooks/useValidatorSQLInjection";
 import useToaster from "@components/feedback/Toaster";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   id: string;
@@ -31,6 +32,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
 
   const toaster = useToaster();
   const validator = useValidatorSQLInjection();
+  const { t } = useTranslation("review/planning-protocol");
 
   const {
     setRows,
@@ -324,7 +326,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
     },
     {
       key: "question",
-      label: "QUESTION",
+      label: t("selectionAndExtraction.input.extractionQuestions.question"),
       width: "40%",
       render: (row, index) => {
         const isEditing = editIndex === index;
@@ -354,7 +356,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
     },
     {
       key: "type",
-      label: "TYPE",
+      label: t("selectionAndExtraction.input.extractionQuestions.type"),
       width: "25%",
       render: (row, index) => {
         const isEditing = editIndex === index;
