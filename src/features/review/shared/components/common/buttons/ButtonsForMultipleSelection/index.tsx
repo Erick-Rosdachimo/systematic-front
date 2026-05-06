@@ -30,7 +30,7 @@ export default function ButtonsForMultipleSelection({
   isShown,
 }: ButtonsForMultipleSelectionProps) {
   const studyContext = useContext(StudyContext);
-  const { t } = useTranslation("review/execution-identification");
+  const { t } = useTranslation("review/execution-selection");
 
   const duplicatedStudies = studyContext?.deletedArticles.filter(
     (art) => art != studyContext?.firstSelected

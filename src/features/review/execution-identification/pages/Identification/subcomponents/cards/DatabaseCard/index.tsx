@@ -21,6 +21,7 @@ import {
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
 import { AiOutlineDelete, AiOutlineEdit, AiOutlineEye } from "react-icons/ai";
+import { useTranslation } from "react-i18next";
 
 import DeleteDatabaseModal from "../../modals/DeleteDatabase";
 import IdentificationModal from "../../modals/IdentificationModal";
@@ -34,6 +35,7 @@ interface DatabaseCardProps {
 
 export default function DataBaseCard({ text }: DatabaseCardProps) {
   const navigate = useNavigate();
+  const { t } = useTranslation("review/execution-identification");
 
   const [showModal, setShowModal] = useState(false);
   const [actionModal, setActionModal] = useState<"create" | "update">("create");
@@ -125,7 +127,7 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
                   _active={{ transform: "translateY(0)" }}
                   onClick={handleCreateSession}
                 >
-                  Add Session
+                  {t("dataBaseCard.addSession")}
                 </Button>
 
                 <IconButton
@@ -176,10 +178,10 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
                 <Thead bg="#263C56">
                   <Tr>
                     <Th color="white" textTransform="none" fontSize="sm">
-                      Date
+                      {t("dataBaseCard.accordionDashboard.date")}
                     </Th>
                     <Th color="white" textTransform="none" fontSize="sm">
-                      Studies
+                      {t("dataBaseCard.accordionDashboard.studies")}
                     </Th>
                     <Th
                       color="white"
@@ -187,7 +189,7 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
                       fontSize="sm"
                       textAlign="right"
                     >
-                      Actions
+                      {t("dataBaseCard.accordionDashboard.actions")}
                     </Th>
                   </Tr>
                 </Thead>
@@ -261,7 +263,7 @@ export default function DataBaseCard({ text }: DatabaseCardProps) {
                         color="gray.500"
                         py="2rem"
                       >
-                        No sessions found for this database.
+                        {t("dataBaseCard.accordionDashboard.notFound")}
                       </Td>
                     </Tr>
                   )}

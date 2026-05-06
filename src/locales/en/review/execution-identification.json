@@ -6,6 +6,7 @@
         "button": "Go to database registration"
     },
     "dataBaseCard": {
+        "addSession": "Add Session",
         "deleteDatabaseModal": {
             "toasts": {
                 "incorrectName": {
@@ -34,7 +35,7 @@
             "date": "Date",
             "studies": "Studies",
             "actions": "Actions",
-            "notFound": "Studies not found"
+            "notFound": "No sessions found for this database."
         },
         "identificationModal": {
             "heading": {
@@ -67,5 +68,9 @@
                 "update": "Update"
             }
         }
+    },
+    "searchSessions": {
+        "header": "Search Sessions",
+        "back": "Back"
     }
 }
