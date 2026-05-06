@@ -6,28 +6,38 @@ import InfosTable from "@features/review/planning-protocol/components/common/tab
 
 interface AddTextTableProps {
   text: string;
+  contextId?: string;
   placeholder: string;
   referencePrefix?: string;
   enableReferenceCode?: boolean;
   tableHeight?: string;
 }
 
-export default function AddTextTable({ text, placeholder, referencePrefix = "", enableReferenceCode = true, tableHeight }: AddTextTableProps) {
-  const { AddText, handleAddText, setAddText } = useAddText(text);
-  const { handleDeleteText } = useDeleteText(text);
+export default function AddTextTable({
+  text,
+  contextId,
+  placeholder,
+  referencePrefix = "",
+  enableReferenceCode = true,
+  tableHeight,
+}: AddTextTableProps) {
+  const hookContext = contextId || text;
+  const { AddText, handleAddText, setAddText } = useAddText(hookContext);
+  const { handleDeleteText } = useDeleteText(hookContext);
+
   return (
     <FormControl sx={label}>
       <FormControl sx={formcontrol}>
         <FormLabel mt={"30px"} fontWeight={500} fontSize={"large"}>
           {" "}
-          {text}{" "}
+          {text}
         </FormLabel>
         <InfosTable
           typeField={""}
           onAddText={(value) => handleAddText(value)}
           onDeleteAddedText={(index) => handleDeleteText(index, setAddText)}
           AddTexts={AddText}
-          context={text}
+          context={hookContext} 
           placeholder={placeholder}
           referencePrefix={referencePrefix}
           enableReferenceCode={enableReferenceCode}

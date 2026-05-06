@@ -91,7 +91,7 @@ export default function InformationSourcesAndSearchStrategy() {
             "informationSourcesAndSearchStrategy.input.databasesAndInformationSource.placeholder",
           )}
           typeField="select"
-          stateKey="Databases and Information Source" // <-- String exata do código dev
+          stateKey="Databases and Information Source"
         />
         <TextAreaInput
           value={searchMethod}
@@ -110,6 +110,7 @@ export default function InformationSourcesAndSearchStrategy() {
         />
         <AddTextTable
           text={t("informationSourcesAndSearchStrategy.input.keywords.label")}
+          contextId="Keywords"
           placeholder={t(
             "informationSourcesAndSearchStrategy.input.keywords.placeholder",
           )}

@@ -83,6 +83,7 @@ export default function EligibilityCriteria() {
       <Box>
         <AddTextTable
           text={t("eligibilityCriteria.input.inclusionCriteria.label")}
+          contextId="Inclusion criteria"
           placeholder={t(
             "eligibilityCriteria.input.inclusionCriteria.placeholder",
           )}
@@ -91,6 +92,7 @@ export default function EligibilityCriteria() {
         />
         <AddTextTable
           text={t("eligibilityCriteria.input.exclusionCriteria.label")}
+          contextId="Exclusion criteria" 
           placeholder={t(
             "eligibilityCriteria.input.exclusionCriteria.placeholder",
           )}
@@ -115,7 +117,7 @@ export default function EligibilityCriteria() {
           options={Languages}
           placeholder={t("eligibilityCriteria.input.languages.placeholder")}
           typeField="select"
-          stateKey="Languages" // <-- String exata do código dev
+          stateKey="Languages"
         />
       </Box>
     </ProtocolFormLayout>

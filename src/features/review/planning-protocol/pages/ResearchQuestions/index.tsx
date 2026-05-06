@@ -36,8 +36,8 @@ export default function ResearchQuestions() {
   return (
     <ProtocolFormLayout
       headerText={t("researchQuestions.headerText")}
-      formControlProps={{ gap: 1.5 }} 
-      navButtons={(
+      formControlProps={{ gap: 1.5 }}
+      navButtons={
         <>
           <NavButton
             event={() =>
@@ -48,13 +48,13 @@ export default function ResearchQuestions() {
           <NavButton
             event={() =>
               syncAndNavigate(
-                `/review/planning/protocol/eligibility-criteria/${id}`
+                `/review/planning/protocol/eligibility-criteria/${id}`,
               )
             }
             text={t("researchQuestions.navButton.next")}
           />
         </>
-      )}
+      }
     >
       <TextAreaInput
         value={justification}
@@ -75,7 +75,9 @@ export default function ResearchQuestions() {
           <h2 style={{ color: "#2E4B6C" }}>
             <AccordionButton>
               <Box flex="1" textAlign="center">
-                <Heading size="md">{t("researchQuestions.secondaryQuestions.heading")}</Heading>
+                <Heading size="md">
+                  {t("researchQuestions.secondaryQuestions.heading")}
+                </Heading>
               </Box>
               <AccordionIcon />
             </AccordionButton>
@@ -84,7 +86,10 @@ export default function ResearchQuestions() {
             <Flex>
               <AddTextTable
                 text={t("researchQuestions.secondaryQuestions.label")}
-                placeholder={t("researchQuestions.secondaryQuestions.placeholder")}
+                contextId="Research Questions"
+                placeholder={t(
+                  "researchQuestions.secondaryQuestions.placeholder",
+                )}
                 referencePrefix="RQ"
                 enableReferenceCode={true}
                 tableHeight="400px"
