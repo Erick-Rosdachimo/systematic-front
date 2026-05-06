@@ -11,15 +11,17 @@ export default function AddResearcher({researchers, setResearchers}:any) {
     }
   }
 
-  function filterStatus(research:any){
-    return (research.status == "none")
+  function filterStatus(status: string){
+    return function (researcher:any){
+      return (researcher.status === status);
+    }
   }
 
   function filterSearchAndStatus({ search, status }: { search?: string; status?: string }) {
     let result = researchers;
   
     if (status) {
-      result = result.filter(filterStatus);
+      result = result.filter(filterStatus("none"));
     }
   
     if (search) {
