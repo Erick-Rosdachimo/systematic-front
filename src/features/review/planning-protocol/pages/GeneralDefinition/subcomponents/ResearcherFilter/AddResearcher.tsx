@@ -58,6 +58,7 @@ export default function AddResearcher({researchers, setResearchers}:any) {
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>){
     setSearch(e.target.value);
+    setResearcherChosen(false);
     setPotentialResearchers(filterSearchAndStatus({ search: e.target.value, status: "none" }));
   }
 
