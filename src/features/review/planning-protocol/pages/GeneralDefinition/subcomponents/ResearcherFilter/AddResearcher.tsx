@@ -1,5 +1,5 @@
 import { Flex, Input, Box, Avatar, Text } from "@chakra-ui/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import EventButton from "@components/common/buttons/EventButton";
 
 export default function AddResearcher({researchers, setResearchers}:any) {
@@ -46,11 +46,14 @@ export default function AddResearcher({researchers, setResearchers}:any) {
   const [chosenResearcherId, setChosenResearcherId] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    setPotentialResearchers(filterSearchAndStatus({ status: "none" }));
+  }, [researchers]);
+
   const handleAddResearcher = () => {
     inviteResearcher(chosenResearcherId);
 
     // Reset all states
-    setPotentialResearchers(filterSearchAndStatus({ status: "none" }));
     setChosenResearcherId("");
     setSearch("");
     setSuggestionsOpen(false);
