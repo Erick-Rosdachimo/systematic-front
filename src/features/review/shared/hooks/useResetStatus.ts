@@ -21,6 +21,12 @@ const useResetStatus = ({ page, reloadArticles }: ResetButtonProps) => {
 
     try {
       if (page === "Selection") {
+        await UseChangeStudyExtractionStatus({
+          studyReviewId: [articleId],
+          status: "UNCLASSIFIED",
+          criterias: [],
+        });
+
         await UseChangeStudySelectionStatus({
           studyReviewId: [articleId],
           status: "UNCLASSIFIED",
