@@ -29,36 +29,36 @@ export default function AddResearcher({researchers, setResearchers}:any) {
     return result;
   }
 
+  function inviteResearcher(id: string){
+    setResearchers(researchers.map((researcher:any) => {
+      if(researcher.id == id){
+        return { ...researcher, status: "pending" };
+      }
+      else{
+        return researcher;
+      }
+    }))
+  }
+
   const [search, setSearch] = useState("");
   const [potentialResearchers, setPotentialResearchers] = useState(() => filterSearchAndStatus({ status: "none" }));
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
-  const [researcherChosen, setResearcherChosen] = useState(false);
-  const [researcherChosenId, setResearcherChosenId] = useState("");
+  const [chosenResearcherId, setChosenResearcherId] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleAddResearcher = () => {
-    // Remove the new pending researcher from the potential researchers list
-    setPotentialResearchers(potentialResearchers.filter((researcher:any) => {
-      const fullResearcherReference = `${researcher.name} - ${researcher.email}`;
-      if(fullResearcherReference == search){
-        console.log(fullResearcherReference + " is equal to " + search);
-        return false;
-      }
-      else{
-        console.log(fullResearcherReference + " is different from " + search);
-        return true;
-      }
-    }))
+    inviteResearcher(chosenResearcherId);
 
     // Reset all states
-    setResearcherChosen(false);
+    setPotentialResearchers(filterSearchAndStatus({ status: "none" }));
+    setChosenResearcherId("");
     setSearch("");
     setSuggestionsOpen(false);
   };
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>){
     setSearch(e.target.value);
-    setResearcherChosen(false);
+    setChosenResearcherId("");
     setPotentialResearchers(filterSearchAndStatus({ search: e.target.value, status: "none" }));
   }
 
@@ -68,7 +68,7 @@ export default function AddResearcher({researchers, setResearchers}:any) {
 
         <Input
           ref={inputRef}
-          style = {{ backgroundColor: researcherChosen ? "#C9D9E5" : "#ffffffff" }} flex="1" minW={0} size="md"  
+          style = {{ backgroundColor: chosenResearcherId !== "" ? "#C9D9E5" : "#ffffffff" }} flex="1" minW={0} size="md"  
           value={search} 
           placeholder="Add a researcher" 
           onChange = {handleInputChange} 
@@ -91,8 +91,7 @@ export default function AddResearcher({researchers, setResearchers}:any) {
                       onMouseDown={(e) => e.preventDefault()}
                       onClick={() => {
                         setSearch(`${researcher.name} - ${researcher.email}`);
-                        setResearcherChosen(true);
-                        setResearcherChosenId(researcher.id);
+                        setChosenResearcherId(researcher.id);
                         inputRef.current?.blur();
                       }}
                     >
@@ -108,11 +107,11 @@ export default function AddResearcher({researchers, setResearchers}:any) {
         )}
 
         <EventButton
-          style={{opacity: researcherChosen ? 1 : 0.30}}
+          style={{opacity: chosenResearcherId !== "" ? 1 : 0.30}}
           w="40px"
           flexShrink={0}
-          onClick={researcherChosen ? handleAddResearcher : undefined}
-          disabled={!researcherChosen}
+          onClick={chosenResearcherId !== "" ? handleAddResearcher : undefined}
+          disabled={chosenResearcherId === ""}
         />
       </Flex>
     </Flex>
