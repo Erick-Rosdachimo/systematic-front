@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import Header from "../../../../../components/structure/Header/Header";
 
@@ -34,7 +35,7 @@ export default function IdentificationSession() {
     handleGoToFinal,
     changeQuantityOfItens,
   } = usePaginationState({ totalPages: fetchedTotalPages, initialSize: 20 });
-
+  const { t } = useTranslation("review/execution-identification");
   const [sortConfig, setSortConfig] = useState<{
     key: keyof ArticleInterface;
     direction: "asc" | "desc";
@@ -63,7 +64,7 @@ export default function IdentificationSession() {
 
   return (
     <FlexLayout navigationType="Accordion">
-      <Header text="Search Sessions" />
+      <Header text={t("searchSessions.header")} />
       <Box
         justifyContent="center"
         alignItems="start"
@@ -87,7 +88,7 @@ export default function IdentificationSession() {
             boxShadow="sm"
             _hover={{ bg: "#2A4A6D", boxShadow: "md" }}
           >
-            Back
+            {t("searchSessions.back")}
           </Button>
           <ColumnVisibilityMenu
             columnsVisible={columnsVisible}

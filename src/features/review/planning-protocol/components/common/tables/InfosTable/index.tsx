@@ -18,6 +18,7 @@ interface InfosTableProps {
   referencePrefix?: string;
   enableReferenceCode?: boolean;
   maxLength?: number;
+  tableHeight?: string;
 }
 
 export default function InfosTable({
@@ -30,6 +31,7 @@ export default function InfosTable({
   referencePrefix = "",
   enableReferenceCode = true,
   maxLength,
+  tableHeight,
 }: InfosTableProps) {
   const { sendAddText } = useCreateProtocol();
   const toaster = useToaster();
@@ -136,7 +138,7 @@ export default function InfosTable({
   };
 
   return (
-    <TableContainer sx={tbConteiner}>
+    <TableContainer sx={{ ...tbConteiner, h: tableHeight || tbConteiner.h }}>
       <Table variant="simple" size="md">
         <Thead>
           <Tr>

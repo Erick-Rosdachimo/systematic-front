@@ -5,16 +5,26 @@ import StudySelectionArea from "../../../structure/StudySelectionArea";
 import { SelectionArticles } from "@features/review/execution-selection/services/useFetchSelectionArticles";
 import { KeyedMutator } from "swr";
 
+import { PaginationControls } from "@features/shared/types/pagination";
+
 interface TableProps {
   articles: ArticleInterface[];
   page: PageLayout;
   reloadArticles: KeyedMutator<SelectionArticles>;
+  pagination: PaginationControls;
+  onTablePageChange: (page: number) => void;
+  extraParams?: Record<string, any>;
+  handleChangeLayout?: (layout: any) => void; 
 }
 
 export const FullArticle: React.FC<TableProps> = ({
   articles,
   page,
   reloadArticles,
+  pagination,
+  onTablePageChange,
+  extraParams = {},
+  handleChangeLayout, 
 }) => {
   return (
     <Box w="100%" h="calc(100% - 1rem)">
@@ -22,6 +32,12 @@ export const FullArticle: React.FC<TableProps> = ({
         articles={articles}
         page={page}
         reloadArticles={reloadArticles}
+        currentPage={pagination.currentPage - 1}
+        totalPages={pagination.quantityOfPages}
+        pageSize={pagination.itensPerPage}
+        onTablePageChange={onTablePageChange}
+        extraParams={extraParams}
+        handleChangeLayout={handleChangeLayout}
       />
     </Box>
   );
