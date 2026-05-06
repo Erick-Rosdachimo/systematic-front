@@ -1,5 +1,5 @@
 import { Flex, Input, Box, Avatar, Text } from "@chakra-ui/react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import EventButton from "@components/common/buttons/EventButton";
 
 export default function AddResearcher({researchers, setResearchers}:any) {
@@ -34,12 +34,10 @@ export default function AddResearcher({researchers, setResearchers}:any) {
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [researcherChosen, setResearcherChosen] = useState(false);
   const [researcherChosenId, setResearcherChosenId] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
-    setResearcherChosenId("");
-    setResearcherChosen(false);
-    setSuggestionsOpen(true);
   };
 
   const handleAddResearcher = () => {
@@ -66,7 +64,8 @@ export default function AddResearcher({researchers, setResearchers}:any) {
     <Flex justify="center" py={2}>
       <Flex gap={2} align="center" width="28rem" position="relative">
 
-        <Input 
+        <Input
+          ref={inputRef}
           style = {{ backgroundColor: researcherChosen ? "#C9D9E5" : "#ffffffff" }} flex="1" minW={0} size="md"  
           value={search} 
           placeholder="Add a researcher" 
@@ -94,7 +93,7 @@ export default function AddResearcher({researchers, setResearchers}:any) {
                         setSearch(`${researcher.name} - ${researcher.email}`);
                         setResearcherChosen(true);
                         setResearcherChosenId(researcher.id);
-                        setSuggestionsOpen(false);
+                        inputRef.current?.blur();
                       }}
                     >
                       <Avatar size="sm" name="Potential Researcher 1" />
