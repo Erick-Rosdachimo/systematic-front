@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import EventButton from "@components/common/buttons/EventButton";
 
 export default function AddResearcher({researchers, setResearchers}:any) {
-  // API methods
+  // Backend
   function filterSearch(search: string){
     return function (researcher:any){
       const fullResearcherReference = `${researcher.name} - ${researcher.email}`;
@@ -36,10 +36,6 @@ export default function AddResearcher({researchers, setResearchers}:any) {
   const [researcherChosenId, setResearcherChosenId] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-  };
-
   const handleAddResearcher = () => {
     // Remove the new pending researcher from the potential researchers list
     setPotentialResearchers(potentialResearchers.filter((researcher:any) => {
@@ -60,6 +56,11 @@ export default function AddResearcher({researchers, setResearchers}:any) {
     setSuggestionsOpen(false);
   };
 
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>){
+    setSearch(e.target.value);
+    setPotentialResearchers(filterSearchAndStatus({ search: e.target.value, status: "none" }));
+  }
+
   return (
     <Flex justify="center" py={2}>
       <Flex gap={2} align="center" width="28rem" position="relative">
@@ -76,10 +77,8 @@ export default function AddResearcher({researchers, setResearchers}:any) {
         
         {suggestionsOpen && (
             <Box position="absolute" width="25rem" top="100%" mt={1} bg="white" border="1px solid" borderColor="gray.300" borderRadius="md">
-              {researchers.length > 0 ? (
-                filterSearchAndStatus({ search, status: "none" })
-                  .slice(0, 3)
-                  .map((researcher:any) => (
+              {potentialResearchers.length > 0 ? (
+                potentialResearchers.slice(0, 3).map((researcher:any) => (
                     <Flex
                       key={researcher.id}
                       align="center"
