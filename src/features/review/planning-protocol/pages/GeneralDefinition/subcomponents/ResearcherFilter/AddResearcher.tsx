@@ -1,19 +1,39 @@
 import { Flex, Input, Box, Avatar, Text } from "@chakra-ui/react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import EventButton from "@components/common/buttons/EventButton";
-import { researchersMock } from "../../../../../../../mocks/researchers";
 
 export default function AddResearcher({researchers, setResearchers}:any) {
+  // API methods
+  function filterSearch(search: string){
+    return function (researcher:any){
+      const fullResearcherReference = `${researcher.name} - ${researcher.email}`;
+      return (fullResearcherReference.toLowerCase().includes(search.toLowerCase()));
+    }
+  }
+
+  function filterStatus(research:any){
+    return (research.status == "none")
+  }
+
+  function filterSearchAndStatus({ search, status }: { search?: string; status?: string }) {
+    let result = researchers;
+  
+    if (status) {
+      result = result.filter(filterStatus);
+    }
+  
+    if (search) {
+      result = result.filter(filterSearch(search));
+    }
+  
+    return result;
+  }
+
   const [search, setSearch] = useState("");
-  const [potentialResearchers, setPotentialResearchers] = useState(researchersMock.filter((researcher) => researcher.status == "none"));
+  const [potentialResearchers, setPotentialResearchers] = useState(() => filterSearchAndStatus({ status: "none" }));
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [researcherChosen, setResearcherChosen] = useState(false);
   const [researcherChosenId, setResearcherChosenId] = useState("");
-
-  useEffect(() => {
-    // simulating API call to get potential researchers
-    setPotentialResearchers(researchers);
-  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -24,7 +44,7 @@ export default function AddResearcher({researchers, setResearchers}:any) {
 
   const handleAddResearcher = () => {
     // Remove the new pending researcher from the potential researchers list
-    setPotentialResearchers(potentialResearchers.filter((researcher) => {
+    setPotentialResearchers(potentialResearchers.filter((researcher:any) => {
       const fullResearcherReference = `${researcher.name} - ${researcher.email}`;
       if(fullResearcherReference == search){
         console.log(fullResearcherReference + " is equal to " + search);
@@ -42,26 +62,9 @@ export default function AddResearcher({researchers, setResearchers}:any) {
     setSuggestionsOpen(false);
   };
 
-  function filterSearch(search: string){
-    return function (researcher:any){
-      const fullResearcherReference = `${researcher.name} - ${researcher.email}`;
-      return (fullResearcherReference.toLowerCase().includes(search.toLowerCase()));
-    }
-  }
-
-  function filterStatus(research:any){
-    return (research.status == "none")
-  }
-
   return (
     <Flex justify="center" py={2}>
       <Flex gap={2} align="center" width="28rem" position="relative">
-
-        {/* {researchers
-          .filter(filterSearch("a"))
-          .map((researcher:any) => {
-          return <Text> {researcher.name}</Text>
-        })} */}
 
         <Input 
           style = {{ backgroundColor: researcherChosen ? "#C9D9E5" : "#ffffffff" }} flex="1" minW={0} size="md"  
@@ -75,10 +78,8 @@ export default function AddResearcher({researchers, setResearchers}:any) {
         {suggestionsOpen && (
             <Box position="absolute" width="25rem" top="100%" mt={1} bg="white" border="1px solid" borderColor="gray.300" borderRadius="md">
               {researchers.length > 0 ? (
-                researchers
-                  .filter(filterStatus)
-                  .filter(filterSearch(search))
-                  .slice(0,3)
+                filterSearchAndStatus({ search, status: "none" })
+                  .slice(0, 3)
                   .map((researcher:any) => (
                     <Flex
                       key={researcher.id}
