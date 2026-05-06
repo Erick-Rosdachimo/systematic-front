@@ -21,7 +21,7 @@ export default function AddResearcher({researchers, setResearchers}:any) {
     let result = researchers;
   
     if (status) {
-      result = result.filter(filterStatus("none"));
+      result = result.filter(filterStatus(status));
     }
   
     if (search) {

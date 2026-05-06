@@ -13,7 +13,7 @@ export default function ResearcherFilter() {
 
       <VStack spacing={0} align="stretch" border="2px solid" borderColor="gray.300" borderRadius="md" bgColor="#ffffffff" px={2} py={2}>
         <AddResearcher researchers={researchers} setResearchers={setResearchers}/>
-        <IncludedResearchers />
+        <IncludedResearchers researchers={researchers} setResearchers={setResearchers}/>
       </VStack>
     </>
   );
