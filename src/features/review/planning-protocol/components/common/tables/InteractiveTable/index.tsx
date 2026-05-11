@@ -154,8 +154,8 @@ export default function InteractiveTable({ id, url, label }: Props) {
 
     if (String(rows[index].id).trim() === "") {
       toaster({
-        title: "A reference code is required.",
-        description: "Please fill in the Code field before saving.",
+        title: t("selectionAndExtraction.input.extractionQuestions.toaster.referenceCode.title"),
+        description: t("selectionAndExtraction.input.extractionQuestions.toaster.referenceCode.description"),
         status: "warning",
       });
       return;
@@ -168,8 +168,8 @@ export default function InteractiveTable({ id, url, label }: Props) {
 
     if (currentCode !== "" && isDuplicate) {
       toaster({
-        title: `The reference code '${currentCode}' is already in use.`,
-        description: "Please choose another one.",
+        title: t("selectionAndExtraction.input.extractionQuestions.toaster.duplicated.title1") + ` ${currentCode} ` + t("selectionAndExtraction.input.extractionQuestions.toaster.duplicated.title2"),
+        description: t("selectionAndExtraction.input.extractionQuestions.toaster.duplicated.description"),
         status: "error",
       });
       return;
@@ -280,7 +280,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
   function addNewRow() {
     if (editIndex !== null) {
       toaster({
-        title: "Finish editing the current row before adding a new one.",
+        title: t("selectionAndExtraction.input.extractionQuestions.toaster.finishEditing"),
         status: "warning",
       });
       return;
