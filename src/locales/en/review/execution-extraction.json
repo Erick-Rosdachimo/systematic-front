@@ -1,4 +1,14 @@
 {
     "header": "Extraction",
-    "search": "Insert article attribute"
+    "search": "Insert article attribute",
+    "extractionFormDisabled": {
+        "title": "Extraction Disabled",
+        "text1": "This study is currently marked as",
+        "EXCLUDED": "EXCLUDED",
+        "UNCLASSIFIED": "UNCLASSIFIED",
+        "text2": "Extraction is only allowed for included studies."
+    },
+    "extractionForm": {
+        "loading": "Loading questions..."
+    }
 }
