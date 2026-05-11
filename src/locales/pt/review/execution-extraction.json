@@ -9,6 +9,18 @@
         "text2": "Extração só é permitida para estudos incluídos."
     },
     "extractionForm": {
-        "loading": "Carregand questões..."
+        "loading": "Carregand questões...",
+        "noQuestions": "Nenhuma questão foi encontrada",
+        "createQuestions": "Criar Questões",
+        "requiredField": "* Esse campo é obrigatório",
+        "submit": "Enviar",
+        "dropdownList": "Opções",
+        "labeledList": "Descrições",
+        "clearSelection": "Limpar seleção",
+        "textual": "Sua resposta",
+        "noChangesToast": {
+            "title": "Nenhuma mudança foi feita",
+            "description": "Atualize pelo menos uma questão antes antes de reenviar."
+        }
     }
 }
