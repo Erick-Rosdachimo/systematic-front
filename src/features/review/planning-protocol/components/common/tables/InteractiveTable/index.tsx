@@ -103,20 +103,20 @@ export default function InteractiveTable({ id, url, label }: Props) {
             let questions;
             switch (item.questionType) {
               case "TEXTUAL":
-                type = "textual";
+                type = t("selectionAndExtraction.input.extractionQuestions.questionType.textual");
                 break;
               case "PICK_LIST":
-                type = "pick list";
+                type = t("selectionAndExtraction.input.extractionQuestions.questionType.pickList");
                 questions = item.options;
                 break;
               case "NUMBERED_SCALE":
-                type = "number scale";
+                type = t("selectionAndExtraction.input.extractionQuestions.questionType.numberedScale");
                 break;
               case "LABELED_SCALE":
-                type = "labeled list";
+                type = t("selectionAndExtraction.input.extractionQuestions.questionType.labeledList");
                 break;
               case "PICK_MANY":
-                type = "pick many";
+                type = t("selectionAndExtraction.input.extractionQuestions.questionType.pickMany");
                 questions = item.options;
                 break;
             }
@@ -185,30 +185,30 @@ export default function InteractiveTable({ id, url, label }: Props) {
     let newQuestionId: string | null = null;
 
     try {
-      if (type === "textual") {
+      if (type === t("selectionAndExtraction.input.extractionQuestions.questionType.textual")) {
         questionType = "TEXTUAL";
         data = { question, questionId, reviewId };
         if (isNew) newQuestionId = await sendTextualQuestion(data);
         else await updateTextualQuestion(data, serverId, questionType);
-      } else if (type === "pick list") {
+      } else if (type === t("selectionAndExtraction.input.extractionQuestions.questionType.pickList")) {
         questionType = "PICK_LIST";
         data = { question, questionId, reviewId, options: questions };
         handleAddQuestions(index, questions);
         if (isNew) newQuestionId = await sendPickListQuestion(data);
         else await updatePickListQuestion(data, serverId, questionType);
-      } else if (type === "number scale") {
+      } else if (type === t("selectionAndExtraction.input.extractionQuestions.questionType.numberedScale")) {
         questionType = "NUMBERED_SCALE";
         data = { question, questionId, reviewId, lower: numberScale[0], higher: numberScale[1] };
         handleNumberScale(index, numberScale[0], numberScale[1]);
         if (isNew) newQuestionId = await sendNumberScaleQuestion(data);
         else await updateNumberScaleQuestion(data, serverId);
-      } else if (type === "labeled list") {
+      } else if (type === t("selectionAndExtraction.input.extractionQuestions.questionType.labeledList")) {
         questionType = "LABELED_SCALE";
         data = { question, questionId, reviewId, scales: labeledQuestions };
         handleLabeledList(index, labeledQuestions);
         if (isNew) newQuestionId = await sendLabeledListQuestion(data);
         else await updateLabeledListQuestion(data, serverId);
-      } else if (type === "pick many") {
+      } else if (type === t("selectionAndExtraction.input.extractionQuestions.questionType.pickMany")) {
         questionType = "PICK_MANY";
         data = { question, questionId, reviewId, options: pickManyQuestions };
         handlePickMany(index, pickManyQuestions);
@@ -374,7 +374,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
           >
             {options.map((opt, i) => (
               <option key={i} value={opt.toLowerCase()}>
-                {opt}
+                {opt.charAt(0).toUpperCase() + opt.slice(1)}
               </option>
             ))}
           </Select>
@@ -450,7 +450,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
         />
       </div>
 
-      {showModal && modalType === "pick list" && (
+      {showModal && modalType === t("selectionAndExtraction.input.extractionQuestions.questionType.pickList") && (
         <PickListModal
           show={setShowModal}
           questionHolder={setQuestions}
@@ -461,7 +461,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
         />
       )}
 
-      {showModal && modalType === "number scale" && (
+      {showModal && modalType === t("selectionAndExtraction.input.extractionQuestions.questionType.numberedScale") && (
         <NumberScaleModal
           show={setShowModal}
           scaleHolder={setnumberScale}
@@ -472,7 +472,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
         />
       )}
 
-      {showModal && modalType === "labeled list" && (
+      {showModal && modalType === t("selectionAndExtraction.input.extractionQuestions.questionType.labeledList") && (
         <LabeledScaleModal
           show={setShowModal}
           questionHolder={setLabeledQuestions}
@@ -483,7 +483,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
         />
       )}
 
-      {showModal && modalType === "pick many" && (
+      {showModal && modalType === t("selectionAndExtraction.input.extractionQuestions.questionType.pickMany") && (
         <PickManyModal
           show={setShowModal}
           optionHolder={setPickManyQuestions}
