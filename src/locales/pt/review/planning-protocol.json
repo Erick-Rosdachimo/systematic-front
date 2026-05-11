@@ -156,7 +156,14 @@
                 "label": "Questões de Extração",
                 "question": "QUESTÃO",
                 "type": "TIPO",
-                "noDataFound": "Dados não encontrados"
+                "noDataFound": "Dados não encontrados",
+                "questionType": {
+                    "textual": "textual",
+                    "pickList": "seleção única",
+                    "numberedScale": "escala numérica",
+                    "labeledList": "lista rotulada",
+                    "pickMany": "seleção múltipla"
+                }
             }
         }
     },
