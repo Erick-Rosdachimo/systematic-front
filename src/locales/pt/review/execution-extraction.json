@@ -20,7 +20,7 @@
         "textual": "Sua resposta",
         "noChangesToast": {
             "title": "Nenhuma mudança foi feita",
-            "description": "Atualize pelo menos uma questão antes antes de reenviar."
+            "description": "Atualize pelo menos uma resposta antes antes de reenviar."
         }
     }
 }
