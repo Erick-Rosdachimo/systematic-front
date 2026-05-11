@@ -9,7 +9,7 @@
         "text2": "Extração só é permitida para estudos incluídos."
     },
     "extractionForm": {
-        "loading": "Carregand questões...",
+        "loading": "Carregando questões...",
         "noQuestions": "Nenhuma questão foi encontrada",
         "createQuestions": "Criar Questões",
         "requiredField": "* Esse campo é obrigatório",
