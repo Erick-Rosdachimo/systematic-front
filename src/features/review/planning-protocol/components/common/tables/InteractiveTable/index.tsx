@@ -368,13 +368,17 @@ export default function InteractiveTable({ id, url, label }: Props) {
             border={isEditing ? "solid 1px #303D50" : "transparent"}
             bg={isEditing ? "white" : "transparent"}
             color="black"
+
+            iconColor={isEditing ? "#303D50" : "transparent"}
+            cursor={isEditing ? "pointer" : "default"}
+            
             _disabled={{ opacity: 1, cursor: "default" }}
             borderRadius="md"
             size="sm"
           >
             {options.map((opt, i) => (
               <option key={i} value={opt.toLowerCase()}>
-                {opt}
+                {opt.trim() === "" ? "Select type..." : opt}
               </option>
             ))}
           </Select>
