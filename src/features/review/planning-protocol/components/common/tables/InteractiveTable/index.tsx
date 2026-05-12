@@ -1,3 +1,4 @@
+// External library
 import { useEffect, useState } from "react";
 import { Input, Select, FormLabel, Textarea } from "@chakra-ui/react";
 import Axios from "../../../../../../../infrastructure/http/axiosClient";
@@ -140,11 +141,11 @@ export default function InteractiveTable({ id, url, label }: Props) {
   }, [id, url, adress, setRows]);
 
   function handleSelect(index: number, newValue: string) {
+    if (!newValue || newValue.trim() === "") return;
+
     handleTypeChange(index, newValue);
-    if (newValue !== "") {
-      setModalType(newValue);
-      setShowModal(true);
-    }
+    setModalType(newValue);
+    setShowModal(true);
   }
 
   async function handleSaveEdit(index: number, closeEditMode: boolean = true) {
@@ -174,6 +175,15 @@ export default function InteractiveTable({ id, url, label }: Props) {
     }
 
     const row = rows[index];
+    if (!row.type || row.type.trim() === "") {
+      toaster({
+        title: "Question type is required.",
+        description: "Please select a valid type from the list before saving.",
+        status: "warning",
+      });
+      return;
+    }
+    
     const { question, id: code, type, isNew, questionId: serverId } = row;
     const questionId = code;
     const reviewId = id;
@@ -361,7 +371,8 @@ export default function InteractiveTable({ id, url, label }: Props) {
         return (
           <Select
             onChange={(e) => handleSelect(index, e.target.value)}
-            value={row.type}
+            placeholder={!row.type ? "Select type" : undefined} 
+            value={row.type || ""} // Garante que o select não quebre se o type for undefined
             isDisabled={!isEditing}
             border={isEditing ? "solid 1px #303D50" : "transparent"}
             bg={isEditing ? "white" : "transparent"}
@@ -370,11 +381,13 @@ export default function InteractiveTable({ id, url, label }: Props) {
             borderRadius="md"
             size="sm"
           >
-            {options.map((opt, i) => (
-              <option key={i} value={opt.toLowerCase()}>
-                {opt}
-              </option>
-            ))}
+            {options
+              .filter((opt) => opt && opt.trim() !== "")
+              .map((opt, i) => (
+                <option key={i} value={opt.toLowerCase()}>
+                  {opt}
+                </option>
+              ))}
           </Select>
         );
       },
