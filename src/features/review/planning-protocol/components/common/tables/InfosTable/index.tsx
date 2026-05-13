@@ -149,6 +149,7 @@ export default function InfosTable({
                     placeholder={`${referencePrefix}-01`}
                     value={referenceCode}
                     onChange={(e) => setReferenceCode(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleAddText()}
                     maxLength={maxLength}
                     onBlur={() =>
                       setReferenceCode((s) => s.trim().toUpperCase())
