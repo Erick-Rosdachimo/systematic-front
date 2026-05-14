@@ -1,6 +1,7 @@
 // External library
 import { useContext, useMemo, useState } from "react";
 import { Box, Flex } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 
 // Context
 import StudySelectionContext from "@features/review/shared/context/StudiesContext";
@@ -32,10 +33,11 @@ export default function Selection() {
   const [showSelected, setShowSelected] = useState<boolean>(false);
   const [fetchedTotalPages, setFetchedTotalPages] = useState<number>(1);
   const selectionContext = useContext(StudySelectionContext);
-  
+  const { t } = useTranslation("review/execution-selection");
+
   const { value: selectedStatus, handleChange: handleSelectChange } =
     useInputState<string | null>(null);
-    
+
   const { layout, handleChangeLayout } = useLayoutPage();
   const { columnsVisible, toggleColumnVisibility } = useVisibiltyColumns({
     page: "Selection",
@@ -62,7 +64,6 @@ export default function Selection() {
     setSize: selectionContext?.setSize,
   });
 
-
   const handleHeaderClick = (key: keyof ArticleInterface) => {
     setSortConfig((prev) => {
       if (prev?.key === key) {
@@ -70,7 +71,7 @@ export default function Selection() {
       }
       return { key, direction: "asc" };
     });
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
   const { articles, isLoading, totalElements, totalPages, mutate } =
@@ -79,7 +80,7 @@ export default function Selection() {
       size: itensPerPage,
       search: searchString,
       status: selectedStatus,
-      sortConfig, 
+      sortConfig,
     });
 
   if (totalPages && totalPages !== fetchedTotalPages) {
@@ -98,6 +99,10 @@ export default function Selection() {
     return articles;
   }, [showSelected, articles, safeSelectedArticles]);
 
+  const handleTablePageChange = (page: number) => {
+    setCurrentPage(page + 1);
+  };
+
   return (
     <FlexLayout navigationType="Accordion">
       <Box w="100%" px="1rem" py=".75rem" h="fit-content">
@@ -108,7 +113,7 @@ export default function Selection() {
           alignItems="center"
           mb="2rem"
         >
-          <Header text="Selection" />
+          <Header text={t("header")} />
           <SelectLayout
             handleChangeLayout={handleChangeLayout}
             layout={layout}
@@ -118,7 +123,7 @@ export default function Selection() {
           <Flex gap="1rem" w="1rem" justifyContent="space-between">
             <InputText
               type="search"
-              placeholder="Insert article attribute"
+              placeholder={t("search")}
               nome="search"
               onChange={(e) => setSearchString(e.target.value)}
               value={searchString}
@@ -144,7 +149,6 @@ export default function Selection() {
               selectedValue={selectedStatus}
               onSelect={handleSelectChange}
               page="Selection"
-              placeholder="Selection status"
               totalCount={totalElements}
             />
           </Box>
@@ -165,6 +169,7 @@ export default function Selection() {
           reloadArticles={mutate}
           sortConfig={sortConfig}
           handleHeaderClick={handleHeaderClick}
+          onTablePageChange={handleTablePageChange}
           pagination={{
             currentPage,
             itensPerPage,

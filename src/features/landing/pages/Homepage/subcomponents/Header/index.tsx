@@ -2,7 +2,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Image } from "@chakra-ui/react";
-import { Box, Button, Flex } from "@chakra-ui/react";
+import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
+import { Box, Button, Flex, Text } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
+import ReactCountryFlag from "react-country-flag";
+import { ChevronDownIcon } from "@chakra-ui/icons";
 
 // Components
 import HomepageModal from "@features/landing/components/modals/HomepageModal/Index";
@@ -30,7 +35,15 @@ interface IHeaderProps {
 
 type IModal = "" | "login" | "signup" | "forgotPassword";
 
+// Maps each i18n language code to its country code and label
+const languageOptions = [
+  { lang: "pt", countryCode: "BR", label: "PT" },
+  { lang: "en", countryCode: "US", label: "EN" },
+];
+
 export default function Header({ show }: IHeaderProps) {
+  const { t } = useTranslation("landing/homepage");
+
   enum LinkTypeEnum {
     GoToOtherPage = "GoToOtherPage",
     StayInSamePage = "StayInSamePage",
@@ -41,10 +54,11 @@ export default function Header({ show }: IHeaderProps) {
   const [openModal, setOpenModal] = useState<IModal>("");
 
   const { toGo } = useNavigation();
-
   const { user, _hasHydrated } = useAuthStore();
 
-  console.log("dados usuario", user);
+  const currentLanguage =
+    languageOptions.find((opt) => opt.lang === i18n.language) ??
+    languageOptions[0];
 
   function handleSignUpModal() {
     setOpenModal("signup");
@@ -88,36 +102,91 @@ export default function Header({ show }: IHeaderProps) {
           {showLinks && (
             <Flex>
               <HeaderLink
-                text="Sobre"
+                text={t("header.about")}
                 id={"sobre"}
                 type={LinkTypeEnum.StayInSamePage}
               />
               <HeaderLink
-                text="Tutorias"
+                text={t("header.tutorials")}
                 id={"tutoriais"}
                 type={LinkTypeEnum.StayInSamePage}
               />
               <HeaderLink
-                text="Colaboradores"
+                text={t("header.collaborators")}
                 id={"colaboradores"}
                 type={LinkTypeEnum.StayInSamePage}
               />
               <HeaderLink
-                text="Contato"
+                text={t("header.contact")}
                 id={"contato"}
                 type={LinkTypeEnum.StayInSamePage}
               />
               <HeaderLink
-                text="Comunidade"
+                text={t("header.community")}
                 id={"comuinidade"}
                 type={LinkTypeEnum.StayInSamePage}
               />
             </Flex>
           )}
         </Flex>
-        <Flex gap="5%">
+
+        <Flex gap="5%" alignItems="center">
           {_hasHydrated && (
             <>
+              <Menu>
+                <MenuButton
+                  as={Button}
+                  color="white"
+                  bg="transparent"
+                  _hover={{ color: "black", backgroundColor: "white" }}
+                  _active={{ color: "black", backgroundColor: "white" }}
+                  _expanded={{ color: "black", backgroundColor: "white" }}
+                  px="0.75rem"
+                >
+                  <Flex alignItems="center" gap="0.4rem">
+                    <ReactCountryFlag
+                      countryCode={currentLanguage.countryCode}
+                      svg
+                      style={{
+                        width: "1.2em",
+                        height: "1.2em",
+                        borderRadius: "2px",
+                      }}
+                    />
+                    <Text fontSize="sm" fontWeight="semibold">
+                      {currentLanguage.label}
+                    </Text>
+                    <ChevronDownIcon />
+                  </Flex>
+                </MenuButton>
+
+                <MenuList minW="90px" w="90px">
+                  {languageOptions.map((opt) => (
+                    <MenuItem
+                      key={opt.lang}
+                      onClick={() => i18n.changeLanguage(opt.lang)}
+                      fontWeight={
+                        i18n.language === opt.lang ? "bold" : "normal"
+                      }
+                      color={i18n.language === opt.lang ? "#2E4B6C" : "inherit"}
+                    >
+                      <Flex alignItems="center" gap="0.5rem">
+                        <ReactCountryFlag
+                          countryCode={opt.countryCode}
+                          svg
+                          style={{
+                            width: "1.2em",
+                            height: "1.2em",
+                            borderRadius: "2px",
+                          }}
+                        />
+                        <Text fontSize="sm">{opt.label}</Text>
+                      </Flex>
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </Menu>
+
               {user ? (
                 <Button
                   _hover={{ color: "black", backgroundColor: "white" }}
@@ -127,7 +196,7 @@ export default function Header({ show }: IHeaderProps) {
                   }
                   onClick={() => toGo("/home")}
                 >
-                  Welcome, {user.sub}
+                  {t("header.welcome", { name: user.sub })}
                 </Button>
               ) : (
                 <>
@@ -143,7 +212,7 @@ export default function Header({ show }: IHeaderProps) {
                     }
                     onClick={handleSignUpModal}
                   >
-                    Sign Up
+                    {t("header.signUp")}
                   </Button>
                   <Button
                     _hover={{ color: "black", backgroundColor: "white" }}
@@ -157,7 +226,7 @@ export default function Header({ show }: IHeaderProps) {
                     }
                     onClick={handleLoginModal}
                   >
-                    Login
+                    {t("header.login")}
                   </Button>
                 </>
               )}

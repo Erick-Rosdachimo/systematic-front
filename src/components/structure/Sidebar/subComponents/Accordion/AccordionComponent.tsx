@@ -7,15 +7,16 @@ import {
   AccordionIcon,
   AccordionPanel,
 } from "@chakra-ui/react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { MdRule } from "react-icons/md";
 import { LuFileSearch, LuFileCheck2 } from "react-icons/lu";
+import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 // Components
 import ProtocolAccordionSubItem from "./AccordionNavItem";
 
 // Hooks
-import useActiveSection from "@features/shared/hooks/useActiveSection";
 import useStructureReview from "@features/review/planning-protocol/services/useStructureReview";
 
 // Types
@@ -31,9 +32,20 @@ const sectionIcons: Record<AccordionSection, React.ReactNode> = {
 };
 
 const AccordionComponent = () => {
+  const { t } = useTranslation("structure/sidebar");
   const id = localStorage.getItem("systematicReviewId");
-  const { activeSection } = useActiveSection();
   const { generalDefinition, isLoading } = useStructureReview();
+
+  const location = useLocation();
+
+  let currentParentSection = "";
+  if (location.pathname.includes("/planning")) {
+    currentParentSection = "Planning";
+  } else if (location.pathname.includes("/execution")) {
+    currentParentSection = "Execution";
+  } else if (location.pathname.includes("/summarization")) {
+    currentParentSection = "Summarization";
+  }
 
   const sectionToIndex: Record<string, number> = {
     Planning: 0,
@@ -41,15 +53,34 @@ const AccordionComponent = () => {
     Summarization: 2,
   };
 
-  const [localIndex, setLocalIndex] = useState<number | number[]>(
-    sectionToIndex[activeSection as string] ?? -1,
-  );
+  const [localIndex, setLocalIndex] = useState<number[]>(() => {
+    const saved = localStorage.getItem("sidebarOpenIndexes");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        return [];
+      }
+    }
+    const initial = sectionToIndex[currentParentSection];
+    return initial !== undefined ? [initial] : [];
+  });
 
-  const [prevSection, setPrevSection] = useState(activeSection);
-  if (activeSection !== prevSection) {
-    setPrevSection(activeSection);
-    setLocalIndex(sectionToIndex[activeSection as string] ?? -1);
-  }
+  useEffect(() => {
+    localStorage.setItem("sidebarOpenIndexes", JSON.stringify(localIndex));
+  }, [localIndex]);
+
+  useEffect(() => {
+    const newIndex = sectionToIndex[currentParentSection];
+    if (newIndex !== undefined) {
+      setLocalIndex((prev) => {
+        if (!prev.includes(newIndex)) {
+          return [...prev, newIndex];
+        }
+        return prev;
+      });
+    }
+  }, [currentParentSection]);
 
   const titleIsFilled = !!generalDefinition?.title?.trim();
 
@@ -58,50 +89,51 @@ const AccordionComponent = () => {
       Planning: [
         {
           path: `/review/planning/protocol/general-definition`,
-          label: "Definition",
+          label: t("planning.definition"),
         },
-        { path: `/review/planning/protocol/picoc/${id}`, label: "PICOC" },
+        { path: `/review/planning/protocol/picoc/${id}`, label: t("planning.picoc") },
         {
           path: `/review/planning/protocol/research-questions/${id}`,
-          label: "Research",
+          label: t("planning.research"),
         },
         {
           path: `/review/planning/protocol/eligibility-criteria/${id}`,
-          label: "Criteria",
+          label: t("planning.criteria"),
         },
         {
           path: `/review/planning/protocol/information-sources-and-search-strategy/${id}`,
-          label: "Sources",
+          label: t("planning.sources"),
         },
         {
           path: `/review/planning/protocol/selection-and-extraction/${id}`,
-          label: "Selection",
+          label: t("planning.selection"),
         },
         {
           path: `/review/planning/protocol/risk-of-bias-assessment/${id}`,
-          label: "Risk of Bias",
+          label: t("planning.risk"),
         },
         {
           path: `/review/planning/protocol/analysis-and-synthesis-of-results/${id}`,
-          label: "Analysis",
+          label: t("planning.analysis"),
         },
       ],
       Execution: [
-        { path: `/review/execution/identification`, label: "Identification" },
-        { path: `/review/execution/selection`, label: "Selection" },
-        { path: `/review/execution/extraction`, label: "Extraction" },
+        { path: `/review/execution/identification`, label: t("execution.identification") },
+        { path: `/review/execution/selection`, label: t("execution.selection") },
+        { path: `/review/execution/extraction`, label: t("execution.extraction") },
       ],
       Summarization: [
-        { path: `/review/summarization/graphics`, label: "Graphics" },
+        { path: `/review/summarization/graphics`, label: t("summarization.graphics") },
+        { path: `/review/summarization/download`, label: t("summarization.download") },
         ...(hasShowOcultScreens
           ? [
               {
                 path: `/review/summarization/visualization`,
-                label: "Visualization",
+                label: t("summarization.visualization"),
               },
               {
                 path: `/review/summarization/finalization`,
-                label: "Finalization",
+                label: t("summarization.finalization"),
               },
             ]
           : []),
@@ -111,14 +143,20 @@ const AccordionComponent = () => {
   );
 
   return (
-    <Accordion w="80%" allowToggle index={localIndex} onChange={(newIndex) => setLocalIndex(newIndex)}>
+    <Accordion
+      w="80%"
+      allowMultiple
+      index={localIndex}
+      onChange={(newIndex) => setLocalIndex(newIndex as number[])}
+    >
       {Object.entries(sections).map(([section, children]) => (
         <AccordionItem key={section} border="none">
           <h2>
             <AccordionButton
               p=".5rem"
-              fontWeight={activeSection === section ? "bold" : "light"}
-              bg={activeSection === section ? "#dadada" : "transparent"}
+              // Usamos a nossa variável baseada na URL para garantir a cor correta
+              fontWeight={currentParentSection === section ? "bold" : "light"}
+              bg={currentParentSection === section ? "#dadada" : "transparent"}
               borderRadius=".25rem"
               _hover={{ bg: "#eeeeee" }}
             >
@@ -131,18 +169,21 @@ const AccordionComponent = () => {
                 gap=".5rem"
               >
                 {sectionIcons[section as AccordionSection]}
-                {section}
+                {t(`sections.${section}`)}
               </Box>
               <AccordionIcon />
             </AccordionButton>
           </h2>
+
           <AccordionPanel paddingInlineEnd={0}>
             {children.map((child) => (
               <ProtocolAccordionSubItem
                 key={child.path}
                 to={child.path}
                 text={child.label}
-                disabled={!isLoading && !titleIsFilled && child.label !== "Definition"}
+                disabled={
+                  !isLoading && !titleIsFilled && child.label !== "Definition"
+                }
               />
             ))}
           </AccordionPanel>

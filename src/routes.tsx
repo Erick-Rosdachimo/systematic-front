@@ -16,8 +16,8 @@ import Profile from "@features/user/profile/pages/Profile";
 
 // Planning
 import GeneralDefinition from "@features/review/planning-protocol/pages/GeneralDefinition";
-import ResearchQuestions from "@features/review/planning-protocol/pages/ResearchQuestions";
 import Picoc from "@features/review/planning-protocol/pages/Picoc";
+import ResearchQuestions from "@features/review/planning-protocol/pages/ResearchQuestions";
 import EligibilityCriteria from "@features/review/planning-protocol/pages/EligibilityCriteria";
 import InformationSourcesAndSearchStrategy from "@features/review/planning-protocol/pages/InformationSourcesAndSearchStrategy";
 import SelectionAndExtraction from "@features/review/planning-protocol/pages/SelectionAndExtraction";
@@ -34,6 +34,7 @@ import Extraction from "@features/review/execution-extraction/pages/Extraction";
 import Graphics from "@features/review/summarization-graphics/pages/Graphics";
 import Visualization from "@features/review/summarization-visualization/pages/visualization";
 import Finalization from "@features/review/summarization-finalization/pages/Finalization";
+import Download from "@features/review/summarization-download/pages/download";
 
 // Error Information
 import Unauthorized from "@features/application/pages/UnauthorizedPage";
@@ -92,7 +93,7 @@ const routesList: RouteObject[] = [
   },
   {
     path: "/review/planning/protocol/risk-of-bias-assessment/:id",
-    element: <ProtectedRoute element={<RiskOfBiasAssessment />} />,
+    element: <ProtectedRoute element={<RiskOfBiasAssessment/>} />,
   },
   {
     path: "/review/planning/protocol/analysis-and-synthesis-of-results/:id",
@@ -126,6 +127,10 @@ const routesList: RouteObject[] = [
     path: "/review/summarization/visualization",
     element: <ProtectedRoute element={<Visualization />} />,
   },
+  {
+      path: "/review/summarization/download",
+      element: <ProtectedRoute element={<Download />} />,
+    },
 ];
 
 export default function AppRoutes() {
