@@ -1,6 +1,9 @@
 // External library
 import useSWR from "swr";
 
+// Hooks
+import useToaster from "@components/feedback/Toaster";
+
 // Service
 import Axios from "../../../../infrastructure/http/axiosClient";
 
@@ -18,6 +21,7 @@ export default function useFetchCriteriaForFocusedArticle({
   articleId,
 }: CriteriaForFocusedArticleProps) {
   const id = localStorage.getItem("systematicReviewId");
+  const toast = useToaster();
 
   const path =
     id && articleId
@@ -26,7 +30,14 @@ export default function useFetchCriteriaForFocusedArticle({
 
   const { data, isLoading, error, mutate } = useSWR(path, fetchAllCriteria, {
     revalidateOnFocus: false,
-    revalidateOnMount: false,
+    onError: () => {
+      toast({
+        title: "Erro ao carregar critérios",
+        description:
+          "Não foi possível buscar os critérios deste artigo. Os dados exibidos podem estar desatualizados.",
+        status: "error",
+      });
+    },
   });
 
   async function fetchAllCriteria() {
