@@ -1,6 +1,8 @@
-import { DeleteIcon } from "@chakra-ui/icons";
-import { Flex, Icon, Text, Avatar, Button } from "@chakra-ui/react";
+import { ChevronDownIcon, DeleteIcon } from "@chakra-ui/icons";
+import { Avatar, Button, Flex, Icon, Menu, MenuButton, MenuItem, MenuList, Text } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
+
+const AVAILABLE_ROLES = ["admin", "reviewer", "owner"] as const;
 
 export default function IncludedResearchers({researchers, setResearchers}:any) {
   // Backend
@@ -35,6 +37,17 @@ export default function IncludedResearchers({researchers, setResearchers}:any) {
     setResearchers(researchers.map((researcher:any) => {
       if(researcher.id == id){
         return { ...researcher, status: "none" };
+      }
+      else{
+        return researcher;
+      }
+    }))
+  }
+
+  function changeRole(id: string, role: string){
+    setResearchers(researchers.map((researcher:any) => {
+      if(researcher.id == id){
+        return { ...researcher, role };
       }
       else{
         return researcher;
@@ -78,7 +91,30 @@ export default function IncludedResearchers({researchers, setResearchers}:any) {
                 {researcher.status.charAt(0).toUpperCase() + researcher.status.slice(1)}
               </Text>
             )}
-            {researcher.status == "included" && (<Text>Role: {researcher.role}</Text>)}
+            {researcher.status == "included" && (
+              <Menu>
+                <MenuButton
+                  as={Button}
+                  variant="ghost"
+                  size="sm"
+                  rightIcon={<ChevronDownIcon />}
+                  fontWeight="normal"
+                >
+                  Role: {researcher.role}
+                </MenuButton>
+                <MenuList>
+                  {AVAILABLE_ROLES.map((role) => (
+                    <MenuItem
+                      key={role}
+                      isDisabled={role === researcher.role}
+                      onClick={() => changeRole(researcher.id, role)}
+                    >
+                      {role}
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </Menu>
+            )}
             <Button
               variant="ghost"
               onClick={() =>
