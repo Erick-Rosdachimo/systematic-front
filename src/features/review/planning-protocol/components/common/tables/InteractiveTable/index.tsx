@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Input, Select, FormLabel, Textarea } from "@chakra-ui/react";
+import { mutate } from "swr";
+import { useTranslation } from "react-i18next";
 import Axios from "../../../../../../../infrastructure/http/axiosClient";
 import EventButton from "@components/common/buttons/EventButton";
 
@@ -17,7 +19,6 @@ import PickManyModal from "../../modals/PickManyModal";
 import LabeledScaleModal from "../../modals/LabeledScaleModal";
 import useValidatorSQLInjection from "@features/shared/hooks/useValidatorSQLInjection";
 import useToaster from "@components/feedback/Toaster";
-import { useTranslation } from "react-i18next";
 
 interface Props {
   id: string;
@@ -29,6 +30,8 @@ export default function InteractiveTable({ id, url, label }: Props) {
   let adress = "";
   if (label == "Extraction Questions" || label == "Questões de Extração") adress = "extraction-question";
   if (label == "Risk of Bias Questions" || label == "Questões sobre Risco de Viés") adress = "rob-question";
+
+  const protocolKey = `systematic-study/${id}/protocol/${adress}`;
 
   const toaster = useToaster();
   const validator = useValidatorSQLInjection();
@@ -149,6 +152,17 @@ export default function InteractiveTable({ id, url, label }: Props) {
     }
   }
 
+  async function revalidateFormulary() {
+    await mutate(protocolKey);
+
+    await mutate(
+      (key: string) =>
+        typeof key === "string" &&
+        key.includes(`systematic-study/${id}/report/`) &&
+        key.includes("/included-studies-answers"),
+    );
+  }
+
   async function handleSaveEdit(index: number, closeEditMode: boolean = true) {
     if (!validator({ value: rows[index].question })) return;
 
@@ -220,9 +234,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
         handleServerSend(index, newQuestionId);
       }
 
-      const accessToken = localStorage.getItem("accessToken");
-      let optionsReq = { headers: { Authorization: `Bearer ${accessToken}` } };
-      await Axios.get(`systematic-study/${id}/protocol/extraction-question`, optionsReq);
+      await revalidateFormulary();
 
       if (closeEditMode) {
         setEditIndex(null);
@@ -252,6 +264,8 @@ export default function InteractiveTable({ id, url, label }: Props) {
 
       await deleteQuestion(data as any, serverId);
       handleDelete(index);
+
+      await revalidateFormulary();
 
       if (pendingNewIndex === index) {
         setPendingNewIndex(null);
@@ -455,9 +469,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
           show={setShowModal}
           questionHolder={setQuestions}
           questions={questions}
-          onSave={() => {
-            if (editIndex !== null) handleSaveEdit(editIndex, false);
-          }}
+          onSave={() => {}}
         />
       )}
 
@@ -466,9 +478,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
           show={setShowModal}
           scaleHolder={setnumberScale}
           values={numberScale}
-          onSave={() => {
-            if (editIndex !== null) handleSaveEdit(editIndex, false);
-          }}
+          onSave={() => {}}
         />
       )}
 
@@ -477,9 +487,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
           show={setShowModal}
           questionHolder={setLabeledQuestions}
           questions={labeledQuestions}
-          onSave={() => {
-            if (editIndex !== null) handleSaveEdit(editIndex, false);
-          }}
+          onSave={() => {}}
         />
       )}
 
@@ -488,9 +496,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
           show={setShowModal}
           optionHolder={setPickManyQuestions}
           options={pickManyQuestions}
-          onSave={() => {
-            if (editIndex !== null) handleSaveEdit(editIndex, false);
-          }}
+          onSave={() => {}}
         />
       )}
     </div>
