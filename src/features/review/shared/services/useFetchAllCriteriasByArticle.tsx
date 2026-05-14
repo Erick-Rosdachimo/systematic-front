@@ -1,15 +1,22 @@
 // External library
-import { useContext, useEffect, useState } from "react";
+import { useContext, useMemo } from "react";
+import type { KeyedMutator } from "swr";
 
 // Hooks
 import useFetchCriteriaForFocusedArticle from "./useCriteriaForFocusedArticle";
 import useFetchInclusionCriteria from "./useFetchInclusionCriteria";
 import useFetchExclusionCriteria from "./useFetchExclusionCriterias";
 import useRevertCriterionState from "./useRevertCriterionState";
+import useToaster from "@components/feedback/Toaster";
+
+// Services
+import { UseChangeStudySelectionStatus } from "./useChangeStudySelectionStatus";
+import { UseChangeStudyExtractionStatus } from "./useChangeStudyExtractionStatus";
 
 // Types
 import { PageLayout } from "../components/structure/LayoutFactory";
 import StudyContext from "../context/StudiesContext";
+import type { SelectionArticles } from "@features/review/execution-selection/services/useFetchSelectionArticles";
 
 export type OptionType = "INCLUSION" | "EXCLUSION";
 
@@ -30,22 +37,33 @@ export type CriteiriaProps = {
 
 type AllCriteriasByArticleProps = {
   page: PageLayout;
+  reloadArticles?: KeyedMutator<SelectionArticles>;
 };
 
-const criteriaStateCache: Record<string, CriteiriaProps> = {};
+const OPTION_TO_GET_KEY: Record<
+  OptionType,
+  "inclusionCriteria" | "exclusionCriteria"
+> = {
+  INCLUSION: "inclusionCriteria",
+  EXCLUSION: "exclusionCriteria",
+};
+
+const CRITERIA_FALLBACK: CriteiriaProps = {
+  options: {
+    INCLUSION: { content: [], isActive: false },
+    EXCLUSION: { content: [], isActive: false },
+  },
+};
 
 export default function useFetchAllCriteriasByArticle({
   page,
+  reloadArticles,
 }: AllCriteriasByArticleProps) {
-  const [criterias, setCriterias] =
-    useState<Record<string, CriteiriaProps>>(criteriaStateCache);
-
   const studiesContext = useContext(StudyContext);
   const selectedArticleReview = studiesContext?.selectedArticleReview ?? -1;
+  const toast = useToaster();
 
-  const stateKey = `${selectedArticleReview}_${page}`;
-
-  const { criteria } = useFetchCriteriaForFocusedArticle({
+  const { criteria, mutate } = useFetchCriteriaForFocusedArticle({
     articleId: selectedArticleReview,
   });
 
@@ -53,184 +71,112 @@ export default function useFetchAllCriteriasByArticle({
   const exclusion = useFetchExclusionCriteria() || [];
   const { revertCriterionState } = useRevertCriterionState({ page });
 
-  useEffect(() => {
-    Object.assign(criteriaStateCache, criterias);
-  }, [criterias]);
+  const criterias = useMemo<CriteiriaProps>(() => {
+    const checkedInclusion = criteria?.inclusionCriteria || [];
+    const checkedExclusion = criteria?.exclusionCriteria || [];
 
-  useEffect(() => {
-    if (!inclusion || !exclusion || selectedArticleReview === -1) return;
+    const inclusionMapped: OptionProps[] = inclusion.map((text) => ({
+      text,
+      isChecked: checkedInclusion.includes(text),
+    }));
 
-    if (inclusion.length === 0 && exclusion.length === 0) return;
+    const exclusionMapped: OptionProps[] = exclusion.map((text) => ({
+      text,
+      isChecked: checkedExclusion.includes(text),
+    }));
 
-    setCriterias((prev) => {
-      if (
-        prev[stateKey] &&
-        prev[stateKey].options.INCLUSION.content.length > 0
-      ) {
-        return prev;
-      }
-
-      const groupOfCriteria: Record<OptionType, string[]> = {
-        INCLUSION: criteria?.inclusionCriteria || [],
-        EXCLUSION: criteria?.exclusionCriteria || [],
-      };
-
-      const inclusionMapped = inclusion.map((content) => ({
-        text: content,
-        isChecked: groupOfCriteria["INCLUSION"].includes(content),
-      }));
-
-      const inclusionStatus = inclusionMapped.some((crit) => crit.isChecked);
-
-      const exclusionMapped = exclusion.map((content) => ({
-        text: content,
-        isChecked: groupOfCriteria["EXCLUSION"].includes(content),
-      }));
-
-      const exclusionStatus = exclusionMapped.some((crit) => crit.isChecked);
-
-      return {
-        ...prev,
-        [stateKey]: {
-          options: {
-            INCLUSION: {
-              content: inclusionMapped,
-              isActive: inclusionStatus,
-            },
-            EXCLUSION: {
-              content: exclusionMapped,
-              isActive: exclusionStatus,
-            },
-          },
+    return {
+      options: {
+        INCLUSION: {
+          content: inclusionMapped,
+          isActive: inclusionMapped.some((c) => c.isChecked),
         },
-      };
-    });
-  }, [inclusion, exclusion, selectedArticleReview, criteria, stateKey]);
+        EXCLUSION: {
+          content: exclusionMapped,
+          isActive: exclusionMapped.some((c) => c.isChecked),
+        },
+      },
+    };
+  }, [inclusion, exclusion, criteria]);
 
-  const captureGroupOfCriteria = (current: CriteiriaProps, key: OptionType) => {
-    const groupCriteria = current.options;
-    const oppositeKey: OptionType =
-      key === "INCLUSION" ? "EXCLUSION" : "INCLUSION";
-    return { groupCriteria, oppositeKey };
-  };
-
-  function hasConflictWithOppositeGroup(
-    groupCriteria: CriteiriaProps["options"],
-    oppositeKey: OptionType,
-  ) {
-    return groupCriteria[oppositeKey].content.some((crit) => crit.isChecked);
-  }
-
-  function updateCriteriaContent(
-    content: OptionProps[],
-    optionText: string,
-    newValue: boolean,
-  ): { updatedContent: OptionProps[]; isNowActive: boolean } {
-    const updated = content.map((crit) =>
-      crit.text === optionText ? { ...crit, isChecked: newValue } : crit,
-    );
-    const isActive = updated.some((crit) => crit.isChecked);
-    return { updatedContent: updated, isNowActive: isActive };
-  }
-
-  const shouldRevertState = (
-    currentContent: OptionProps[],
-    optionText: string,
-    newValue: boolean,
-  ) => {
-    const criteria = currentContent.find((crit) => crit.text === optionText);
-    if (!criteria) return;
-    return criteria.isChecked === true && newValue === false;
-  };
-
-  const handlerUpdateCriteriasStructure = (
+  const handlerUpdateCriteriasStructure = async (
     key: OptionType,
     optionText: string,
     newValue: boolean,
   ) => {
     if (selectedArticleReview === -1) return;
 
-    setCriterias((prev) => {
-      const current = prev[stateKey];
-      if (!current) return prev;
+    const oppositeKey: OptionType =
+      key === "INCLUSION" ? "EXCLUSION" : "INCLUSION";
+    const currentChecked = criteria?.[OPTION_TO_GET_KEY[key]] || [];
+    const oppositeChecked = criteria?.[OPTION_TO_GET_KEY[oppositeKey]] || [];
 
-      const { groupCriteria, oppositeKey } = captureGroupOfCriteria(
-        current,
-        key,
-      );
-      if (!groupCriteria) return prev;
+    if (newValue && oppositeChecked.length > 0) return;
 
-      if (
-        newValue &&
-        hasConflictWithOppositeGroup(groupCriteria, oppositeKey)
-      ) {
-        return prev;
-      }
+    const newChecked = newValue
+      ? [...currentChecked, optionText]
+      : currentChecked.filter((c) => c !== optionText);
 
-      const { updatedContent, isNowActive } = updateCriteriaContent(
-        groupCriteria[key].content,
-        optionText,
-        newValue,
-      );
+    const optimisticData = {
+      inclusionCriteria:
+        key === "INCLUSION" ? newChecked : criteria?.inclusionCriteria || [],
+      exclusionCriteria:
+        key === "EXCLUSION" ? newChecked : criteria?.exclusionCriteria || [],
+    };
 
-      if (shouldRevertState(groupCriteria[key].content, optionText, newValue)) {
-        revertCriterionState([optionText]);
-      }
+    const status =
+      newChecked.length === 0
+        ? "UNCLASSIFIED"
+        : key === "INCLUSION"
+          ? "INCLUDED"
+          : "EXCLUDED";
 
-      return {
-        ...prev,
-        [stateKey]: {
-          ...current,
-          options: {
-            ...groupCriteria,
-            [key]: {
-              content: updatedContent,
-              isActive: isNowActive,
-            },
-          },
+    const patchStatus =
+      page === "Selection"
+        ? UseChangeStudySelectionStatus
+        : UseChangeStudyExtractionStatus;
+
+    try {
+      await mutate(
+        async () => {
+          await patchStatus({
+            studyReviewId: [selectedArticleReview],
+            criterias: newChecked,
+            status,
+          });
+
+          if (!newValue) {
+            await revertCriterionState([optionText]);
+          }
+
+          if (reloadArticles) await reloadArticles();
+
+          return optimisticData;
         },
-      };
-    });
+        {
+          optimisticData,
+          rollbackOnError: true,
+          revalidate: false,
+        },
+      );
+    } catch (error) {
+      console.error("Failed to update criterion:", error);
+      toast({
+        title: "Erro ao salvar critério",
+        description:
+          "Não foi possível atualizar este critério. Tente novamente.",
+        status: "error",
+      });
+    }
   };
 
-  const resetLocalCriterias = () => {
+  const resetLocalCriterias = async () => {
     if (selectedArticleReview === -1) return;
-
-    setCriterias((prev) => {
-      const current = prev[stateKey];
-      if (!current) return prev;
-
-      const resetContent = (content: OptionProps[]) =>
-        content.map((c) => ({ ...c, isChecked: false }));
-
-      return {
-        ...prev,
-        [stateKey]: {
-          ...current,
-          options: {
-            INCLUSION: {
-              content: resetContent(current.options.INCLUSION.content),
-              isActive: false,
-            },
-            EXCLUSION: {
-              content: resetContent(current.options.EXCLUSION.content),
-              isActive: false,
-            },
-          },
-        },
-      };
-    });
-  };
-
-  const CRITERIA_FALLBACK: CriteiriaProps = {
-    options: {
-      INCLUSION: { content: [], isActive: false },
-      EXCLUSION: { content: [], isActive: false },
-    },
+    await mutate();
   };
 
   return {
-    criterias: criterias[stateKey] || CRITERIA_FALLBACK,
+    criterias: criterias || CRITERIA_FALLBACK,
     handlerUpdateCriteriasStructure,
     resetLocalCriterias,
   };
