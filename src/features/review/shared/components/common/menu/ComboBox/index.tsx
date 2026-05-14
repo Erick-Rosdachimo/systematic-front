@@ -12,7 +12,6 @@ import {
 import { HiOutlineCheckCircle, HiOutlineXCircle } from "react-icons/hi";
 
 // Hooks
-import useComboBoxSelection from "../../../../hooks/useComboBoxSelection";
 import useToaster from "@components/feedback/Toaster";
 
 // Types
@@ -21,8 +20,6 @@ import type {
   OptionProps,
   OptionType,
 } from "../../../../services/useFetchAllCriteriasByArticle";
-import { SelectionArticles } from "@features/review/execution-selection/services/useFetchSelectionArticles";
-import { KeyedMutator } from "swr";
 
 interface IComboBoxProps {
   text: string;
@@ -40,7 +37,6 @@ interface IComboBoxProps {
     optionText: string,
     newValue: boolean,
   ) => void;
-  reloadArticles: KeyedMutator<SelectionArticles>;
   selectedCriteria?: string[];
 }
 
@@ -53,12 +49,8 @@ export default function ComboBox({
   status,
   groupKey,
   handlerUpdateCriteriasStructure,
-  reloadArticles,
   selectedCriteria = [],
 }: IComboBoxProps) {
-  const { handleIncludeItemClick, handleExcludeItemClick } =
-    useComboBoxSelection({ page, reloadArticles });
-
   const toast = useToaster();
 
   const { selectionStatus, extractionStatus } = status;
@@ -73,6 +65,14 @@ export default function ComboBox({
         "Você não pode incluir ou excluir critérios de um artigo marcado como duplicado pelo sistema.",
       status: "warning",
     });
+
+  const handleToggle = (option: OptionProps, newValue: boolean) => {
+    if (hasInvalidStatus) {
+      showDuplicatedWarning();
+      return;
+    }
+    handlerUpdateCriteriasStructure(groupKey, option.text, newValue);
+  };
 
   return (
     <Menu closeOnSelect={false}>
@@ -99,83 +99,11 @@ export default function ComboBox({
 
           return (
             <MenuItem key={index} maxW="25rem" overflow="auto">
-              {text === "Include" ? (
+              {text === "Include" || text === "Exclude" ? (
                 <Checkbox
                   isDisabled={isDisabled}
                   isChecked={option.isChecked}
-                  onChange={(e) => {
-                    if (hasInvalidStatus) {
-                      showDuplicatedWarning();
-                      return;
-                    }
-
-                    const newValue = e.target.checked;
-
-                    handlerUpdateCriteriasStructure(
-                      groupKey,
-                      option.text,
-                      newValue,
-                    );
-
-                    const updatedList = options.map((item) =>
-                      item.text === option.text
-                        ? { ...item, isChecked: newValue }
-                        : item,
-                    );
-
-                    handleIncludeItemClick(
-                      updatedList
-                        .filter((data) => data.isChecked == true)
-                        .map((item) => item.text),
-                    );
-                  }}
-                >
-                  <Tooltip
-                    label={option.text}
-                    aria-label="Full criteria"
-                    p="1rem"
-                    hasArrow
-                  >
-                    <Text
-                      isTruncated
-                      maxW="20rem"
-                      fontWeight={isHighlighted ? "bold" : "normal"}
-                      color={isHighlighted ? "black" : "inherit"}
-                    >
-                      {option.text}
-                    </Text>
-                  </Tooltip>
-                </Checkbox>
-              ) : text === "Exclude" ? (
-                <Checkbox
-                  isDisabled={isDisabled}
-                  isChecked={option.isChecked}
-                  onChange={(e) => {
-                    if (hasInvalidStatus) {
-                      showDuplicatedWarning();
-                      return;
-                    }
-
-                    const newValue = e.target.checked;
-
-                    handlerUpdateCriteriasStructure(
-                      groupKey,
-                      option.text,
-                      newValue,
-                    );
-
-                    const updatedList = options.map((item) =>
-                      item.text === option.text
-                        ? { ...item, isChecked: newValue }
-                        : item,
-                    );
-
-                    handleExcludeItemClick(
-                      updatedList
-                        .filter((data) => data.isChecked == true)
-                        .map((item) => item.text),
-                    );
-                  }}
+                  onChange={(e) => handleToggle(option, e.target.checked)}
                 >
                   <Tooltip
                     label={option.text}
