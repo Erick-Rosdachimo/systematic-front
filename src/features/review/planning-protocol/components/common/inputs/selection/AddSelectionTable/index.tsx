@@ -10,14 +10,16 @@ import SelectInfosTable from "@features/review/planning-protocol/components/comm
 interface AddSelectTableProps {
   options: string[];
   placeholder: string;
-  typeField: string;
+  typeField?: string;
   label: string;
+  stateKey: string; 
 }
 
-export default function AddSelectTable({
+export default function AddSelectionTable({
   options,
   label,
   placeholder,
+  stateKey,
 }: AddSelectTableProps) {
   const {
     selectedValue,
@@ -25,17 +27,21 @@ export default function AddSelectTable({
     handleSelectChange,
     handleSelectAddButtonClick,
     handleDeleteSelect,
-  } = useSelect([], label);
+  } = useSelect([], stateKey);
 
   const formattedOptions = options.map((opt) => capitalize(opt.toLowerCase()));
 
-  const formatSelectedValues = selectedValues.map((value) =>
-    capitalize(value.toLowerCase())
-  );
+const formatSelectedValues = selectedValues.map((val) => {
+  const originalOption = options.find((opt) => opt.toLowerCase() === val.toLowerCase());
+  return originalOption || val;
+});
+
 
   return (
     <FormControl sx={conteiner} alignContent={"center"}>
-      <FormLabel mt={"30px"} fontWeight={500} fontSize={"large"}>{label}</FormLabel>
+      <FormLabel mt={"30px"} fontWeight={500} fontSize={"large"}>
+        {label}
+      </FormLabel>
       <FormControl sx={formcontrol} justifyContent={"space-between"}>
         <SelectInput
           values={formattedOptions}
@@ -46,7 +52,8 @@ export default function AddSelectTable({
           page={"protocol"}
         />
         <EventButton
-          text="Add" event={() => {
+          text="Add"
+          event={() => {
             if (selectedValue && selectedValue.trim() !== "") {
               handleSelectAddButtonClick();
             }

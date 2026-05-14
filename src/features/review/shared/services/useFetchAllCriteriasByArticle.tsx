@@ -40,6 +40,8 @@ type AllCriteriasByArticleProps = {
   reloadArticles?: KeyedMutator<SelectionArticles>;
 };
 
+type StatusValue = "INCLUDED" | "EXCLUDED" | "UNCLASSIFIED";
+
 const OPTION_TO_GET_KEY: Record<
   OptionType,
   "inclusionCriteria" | "exclusionCriteria"
@@ -124,26 +126,38 @@ export default function useFetchAllCriteriasByArticle({
         key === "EXCLUSION" ? newChecked : criteria?.exclusionCriteria || [],
     };
 
-    const status =
+    const status: StatusValue =
       newChecked.length === 0
         ? "UNCLASSIFIED"
         : key === "INCLUSION"
           ? "INCLUDED"
           : "EXCLUDED";
 
-    const patchStatus =
-      page === "Selection"
-        ? UseChangeStudySelectionStatus
-        : UseChangeStudyExtractionStatus;
-
     try {
       await mutate(
         async () => {
-          await patchStatus({
-            studyReviewId: [selectedArticleReview],
-            criterias: newChecked,
-            status,
-          });
+          if (page === "Selection") {
+            await UseChangeStudySelectionStatus({
+              studyReviewId: [selectedArticleReview],
+              criterias: newChecked,
+              status,
+            });
+
+            const extractionStatus: StatusValue =
+              status === "INCLUDED" ? "UNCLASSIFIED" : status;
+
+            await UseChangeStudyExtractionStatus({
+              studyReviewId: [selectedArticleReview],
+              criterias: status === "EXCLUDED" ? newChecked : [],
+              status: extractionStatus,
+            });
+          } else {
+            await UseChangeStudyExtractionStatus({
+              studyReviewId: [selectedArticleReview],
+              criterias: newChecked,
+              status,
+            });
+          }
 
           if (!newValue) {
             await revertCriterionState([optionText]);

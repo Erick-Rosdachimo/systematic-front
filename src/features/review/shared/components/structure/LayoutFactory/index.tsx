@@ -28,9 +28,14 @@ interface LayoutFactoryProps {
   isLoading: boolean;
   columnsVisible: ColumnVisibility;
   pagination: PaginationControls;
-  sortConfig: { key: keyof ArticleInterface; direction: "asc" | "desc" } | null;
+  sortConfig: {
+    key: keyof ArticleInterface;
+    direction: "asc" | "desc";
+  } | null;
   handleHeaderClick: (key: keyof ArticleInterface) => void;
   reloadArticles: KeyedMutator<SelectionArticles>;
+  onTablePageChange: (page: number) => void;
+  extraParams?: Record<string, any>;
 }
 
 export default function LayoutFactory({
@@ -44,7 +49,10 @@ export default function LayoutFactory({
   reloadArticles,
   sortConfig,
   handleHeaderClick,
+  onTablePageChange,
+  extraParams = {},
 }: LayoutFactoryProps) {
+  
   const handleRowClick = () => {
     handleChangeLayout("vertical");
   };
@@ -56,10 +64,11 @@ export default function LayoutFactory({
         columnsVisible={columnsVisible}
         onRowClick={handleRowClick}
         pagination={pagination}
-        sortConfig={sortConfig} 
-        handleHeaderClick={handleHeaderClick} 
+        sortConfig={sortConfig}
+        handleHeaderClick={handleHeaderClick}
       />
     ),
+
     vertical: (
       <SplitVertical
         articles={articles}
@@ -68,10 +77,14 @@ export default function LayoutFactory({
         columnsVisible={columnsVisible}
         pagination={pagination}
         reloadArticles={reloadArticles}
-        sortConfig={sortConfig} 
-        handleHeaderClick={handleHeaderClick} 
+        sortConfig={sortConfig}
+        handleHeaderClick={handleHeaderClick}
+        onTablePageChange={onTablePageChange}
+        extraParams={extraParams}
+        handleChangeLayout={handleChangeLayout}
       />
     ),
+
     "vertical-invert": (
       <SplitVertical
         articles={articles}
@@ -80,10 +93,14 @@ export default function LayoutFactory({
         columnsVisible={columnsVisible}
         pagination={pagination}
         reloadArticles={reloadArticles}
-        sortConfig={sortConfig} 
-        handleHeaderClick={handleHeaderClick} 
+        sortConfig={sortConfig}
+        handleHeaderClick={handleHeaderClick}
+        onTablePageChange={onTablePageChange}
+        extraParams={extraParams}
+        handleChangeLayout={handleChangeLayout}
       />
     ),
+
     horizontal: (
       <SplitHorizontal
         articles={articles}
@@ -93,10 +110,14 @@ export default function LayoutFactory({
         columnsVisible={columnsVisible}
         pagination={pagination}
         reloadArticles={reloadArticles}
-        sortConfig={sortConfig} 
-        handleHeaderClick={handleHeaderClick} 
+        sortConfig={sortConfig}
+        handleHeaderClick={handleHeaderClick}
+        onTablePageChange={onTablePageChange}
+        extraParams={extraParams}
+        handleChangeLayout={handleChangeLayout} 
       />
     ),
+
     "horizontal-invert": (
       <SplitHorizontal
         articles={articles}
@@ -106,15 +127,23 @@ export default function LayoutFactory({
         columnsVisible={columnsVisible}
         pagination={pagination}
         reloadArticles={reloadArticles}
-        sortConfig={sortConfig} 
-        handleHeaderClick={handleHeaderClick} 
+        sortConfig={sortConfig}
+        handleHeaderClick={handleHeaderClick}
+        onTablePageChange={onTablePageChange}
+        extraParams={extraParams}
+        handleChangeLayout={handleChangeLayout} 
       />
     ),
+
     article: (
       <FullArticle
         articles={articles}
         page={page}
         reloadArticles={reloadArticles}
+        pagination={pagination}
+        onTablePageChange={onTablePageChange}
+        extraParams={extraParams}
+        handleChangeLayout={handleChangeLayout}
       />
     ),
   };

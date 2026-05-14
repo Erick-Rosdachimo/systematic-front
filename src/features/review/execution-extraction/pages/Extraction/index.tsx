@@ -1,6 +1,7 @@
 // External library
 import { useContext, useMemo, useState } from "react";
 import { Box, Flex } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 
 // Context
 import StudySelectionContext from "@features/review/shared/context/StudiesContext";
@@ -33,6 +34,7 @@ export default function Extraction() {
   const [showSelected, setShowSelected] = useState<boolean>(false);
   const [fetchedTotalPages, setFetchedTotalPages] = useState<number>(1);
   const selectionContext = useContext(StudySelectionContext);
+  const { t } = useTranslation("review/execution-extraction");
 
   const { value: selectedStatus, handleChange: handleSelectChange } =
     useInputState<string | null>(null);
@@ -50,7 +52,7 @@ export default function Extraction() {
   const {
     currentPage,
     itensPerPage,
-    setCurrentPage, 
+    setCurrentPage,
     handleNextPage,
     handlePrevPage,
     handleBackToInitial,
@@ -65,7 +67,7 @@ export default function Extraction() {
       }
       return { key, direction: "asc" };
     });
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
   const { articles, isLoading, totalElements, totalPages, mutate } =
@@ -93,6 +95,10 @@ export default function Extraction() {
     return articles;
   }, [showSelected, articles, safeSelectedArticles]);
 
+  const handleTablePageChange = (page: number) => {
+    setCurrentPage(page + 1);
+  };
+
   return (
     <FlexLayout navigationType="Accordion">
       <Box w="100%" px="1rem" py=".75rem" h="fit-content">
@@ -103,7 +109,7 @@ export default function Extraction() {
           alignItems="center"
           mb="2rem"
         >
-          <Header text="Extraction" />
+          <Header text={t("header")} />
           <SelectLayout
             handleChangeLayout={handleChangeLayout}
             layout={layout}
@@ -113,7 +119,7 @@ export default function Extraction() {
           <Flex gap="1rem" w="1rem" justifyContent="space-between">
             <InputText
               type="search"
-              placeholder="Insert article attribute"
+              placeholder={t("search")}
               nome="search"
               onChange={(e) => setSearchString(e.target.value)}
               value={searchString}
@@ -171,6 +177,8 @@ export default function Extraction() {
           reloadArticles={mutate}
           sortConfig={sortConfig}
           handleHeaderClick={handleHeaderClick}
+          onTablePageChange={handleTablePageChange}
+          extraParams={{ selectionStatus: "INCLUDED" }}
         />
       </Box>
     </FlexLayout>

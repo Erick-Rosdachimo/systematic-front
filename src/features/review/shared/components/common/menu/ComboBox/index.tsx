@@ -60,9 +60,9 @@ export default function ComboBox({
 
   const showDuplicatedWarning = () =>
     toast({
-      title: "Ação não permitida",
+      title: "Action not allowed",
       description:
-        "Você não pode incluir ou excluir critérios de um artigo marcado como duplicado pelo sistema.",
+        "You cannot include or exclude criteria for an article marked as duplicated by the system.",
       status: "warning",
     });
 
@@ -73,6 +73,8 @@ export default function ComboBox({
     }
     handlerUpdateCriteriasStructure(groupKey, option.text, newValue);
   };
+
+  const codePrefix = text === "Include" ? "IC" : "EC";
 
   return (
     <Menu closeOnSelect={false}>
@@ -117,7 +119,7 @@ export default function ComboBox({
                       fontWeight={isHighlighted ? "bold" : "normal"}
                       color={isHighlighted ? "black" : "inherit"}
                     >
-                      {option.text}
+                      {`${codePrefix}-${(index + 1).toString().padStart(2, "0")}`}
                     </Text>
                   </Tooltip>
                 </Checkbox>

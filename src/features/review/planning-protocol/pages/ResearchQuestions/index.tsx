@@ -9,6 +9,7 @@ import {
   Flex,
   Heading,
 } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 
 // Components
 import NavButton from "@components/common/buttons/NavigationButton";
@@ -24,6 +25,8 @@ export default function ResearchQuestions() {
   const { researchQuestion, handleChangeResearchQuestion, syncAndNavigate } =
     useCreateProtocol();
 
+  const { t } = useTranslation("review/planning-protocol");
+
   const { showResearchQuestions } = useProtocolAccordion();
 
   const { justification } = researchQuestion;
@@ -32,31 +35,31 @@ export default function ResearchQuestions() {
 
   return (
     <ProtocolFormLayout
-      headerText="Protocol: Research Questions"
-      formControlProps={{ gap: 1.5 }} 
-      navButtons={(
+      headerText={t("researchQuestions.headerText")}
+      formControlProps={{ gap: 1.5 }}
+      navButtons={
         <>
           <NavButton
             event={() =>
               syncAndNavigate(`/review/planning/protocol/picoc/${id}`)
             }
-            text="Back"
+            text={t("researchQuestions.navButton.back")}
           />
           <NavButton
             event={() =>
               syncAndNavigate(
-                `/review/planning/protocol/eligibility-criteria/${id}`
+                `/review/planning/protocol/eligibility-criteria/${id}`,
               )
             }
-            text="Next"
+            text={t("researchQuestions.navButton.next")}
           />
         </>
-      )}
+      }
     >
       <TextAreaInput
         value={justification}
-        label="Primary question"
-        placeholder="Enter review description"
+        label={t("researchQuestions.primaryQuestion.label")}
+        placeholder={t("researchQuestions.primaryQuestion.placeholder")}
         onChange={(event) =>
           handleChangeResearchQuestion("justification", event.target.value)
         }
@@ -72,7 +75,9 @@ export default function ResearchQuestions() {
           <h2 style={{ color: "#2E4B6C" }}>
             <AccordionButton>
               <Box flex="1" textAlign="center">
-                <Heading size="md">Secondary Questions</Heading>
+                <Heading size="md">
+                  {t("researchQuestions.secondaryQuestions.heading")}
+                </Heading>
               </Box>
               <AccordionIcon />
             </AccordionButton>
@@ -80,10 +85,14 @@ export default function ResearchQuestions() {
           <AccordionPanel pb={4}>
             <Flex>
               <AddTextTable
-                text="Research Questions"
-                placeholder="Enter the other Research Questions"
+                text={t("researchQuestions.secondaryQuestions.label")}
+                contextId="Research Questions"
+                placeholder={t(
+                  "researchQuestions.secondaryQuestions.placeholder",
+                )}
                 referencePrefix="RQ"
                 enableReferenceCode={true}
+                tableHeight="400px"
               />
             </Flex>
           </AccordionPanel>
