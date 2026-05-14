@@ -42,11 +42,14 @@ export default function AddResearcher({researchers, setResearchers}:any) {
     }))
   }
 
+  const SEARCH_TRIGGER_STEP = 3;
+
   const [search, setSearch] = useState("");
   const [potentialResearchers, setPotentialResearchers] = useState(() => filterSearchAndStatus({ status: "none" }));
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [chosenResearcherId, setChosenResearcherId] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const lastTriggeredLengthRef = useRef(0);
 
   useEffect(() => {
     setPotentialResearchers(filterSearchAndStatus({ status: "none" }));
@@ -59,12 +62,18 @@ export default function AddResearcher({researchers, setResearchers}:any) {
     setChosenResearcherId("");
     setSearch("");
     setSuggestionsOpen(false);
+    lastTriggeredLengthRef.current = 0;
   };
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>){
-    setSearch(e.target.value);
+    const value = e.target.value;
+    setSearch(value);
     setChosenResearcherId("");
-    setPotentialResearchers(filterSearchAndStatus({ search: e.target.value, status: "none" }));
+
+    if (Math.abs(value.length - lastTriggeredLengthRef.current) >= SEARCH_TRIGGER_STEP) {
+      setPotentialResearchers(filterSearchAndStatus({ search: value, status: "none" }));
+      lastTriggeredLengthRef.current = value.length;
+    }
   }
 
   return (
