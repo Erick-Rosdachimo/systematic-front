@@ -100,7 +100,7 @@ export default function AddResearcher({researchers, setResearchers}:any) {
                         inputRef.current?.blur();
                       }}
                     >
-                      <Avatar size="sm" name="Potential Researcher 1" />
+                      <Avatar size="sm" name={researcher.name} bg="#2E4B6C" color="white" />
                       <Text flex="1" fontSize="sm">{researcher.name} - {researcher.email}</Text>
                     </Flex>
                   ))

@@ -69,7 +69,7 @@ export default function IncludedResearchers({researchers, setResearchers}:any) {
     <>
     {listedResearchers.map((researcher:any) => (
       <Flex align="center" gap={5} px ={4} py={2} borderWidth="1px" borderColor="gray.200" borderRadius="md">
-        <Avatar size="sm" name={researcher.name} />
+        <Avatar size="sm" name={researcher.name} bg="#2E4B6C" color="white" />
         <Flex align="center" justify="space-between" flex="1">
           <Text>{researcher.name} - {researcher.email}</Text>
           <Flex align="center" gap={5}>
