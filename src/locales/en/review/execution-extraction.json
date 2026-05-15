@@ -6,6 +6,7 @@
         "text1": "This study is currently marked as",
         "EXCLUDED": "EXCLUDED",
         "UNCLASSIFIED": "UNCLASSIFIED",
+        "DUPLICATED": "DUPLICATED",
         "text2": "Extraction is only allowed for included studies."
     },
     "extractionForm": {
