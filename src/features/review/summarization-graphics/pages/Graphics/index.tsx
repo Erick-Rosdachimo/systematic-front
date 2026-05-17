@@ -9,6 +9,8 @@ import SectionMenu from "../../components/menus/SectionMenu";
 import FiltersMenu from "../../components/menus/FilterMenu";
 import { ExportProvider } from "../../context/ExportContext";
 import { useTranslation } from "react-i18next";
+import { useFetchExtractionQuestions } from "@features/review/execution-extraction/services/useFetchExtractionQuestions";
+import { useFetchRobQuestions } from "@features/review/execution-extraction/services/useFetchRobQuestions";
 
 export default function Graphics() {
   const {
@@ -24,6 +26,10 @@ export default function Graphics() {
     filtersBySection,
     currentAllowedTypes,
   } = useGraphicsState();
+
+  const { questions: extractionQuestions = [] } = useFetchExtractionQuestions();
+  const { questions: robQuestions = [] } = useFetchRobQuestions();
+
   const { t } = useTranslation("review/summarization-graphics");
 
   const handleUnifiedSelection = (value: string) => {
@@ -32,78 +38,79 @@ export default function Graphics() {
     if (isQuestion) {
       handleSectionChange("Form Questions");
       setSelectedQuestionId(value);
-    } 
-    else {
+    } else {
       handleSectionChange(value);
       setSelectedQuestionId(undefined);
     }
   };
 
   return (
-<FlexLayout navigationType="Accordion">
-  <Flex justifyContent="space-between" alignItems="flex-start" w="100%" mb="1rem">
-    <Flex flexDirection="column" gap="0.75rem">
-      <Header text={t("header")} />
+    <FlexLayout navigationType="Accordion">
+      <Flex justifyContent="space-between" alignItems="flex-start" w="100%" mb="1rem">
+        <Flex flexDirection="column" gap="0.75rem">
+          <Header text={t("header")} />
 
-      {filtersBySection[section]?.length > 0 && (
-        <Flex flexDirection="column" gap="0.5rem">
-          <Text fontWeight="semibold" fontSize="lg" color="#263C56">
-            {t("filtersArea.heading")}
-          </Text>
-          <FiltersMenu
-            availableFilters={filtersBySection[section]}
-            filters={filters}
-            setFilters={setFilters}
+          {filtersBySection[section]?.length > 0 && (
+            <Flex flexDirection="column" gap="0.5rem">
+              <Text fontWeight="semibold" fontSize="lg" color="#263C56">
+                {t("filtersArea.heading")}
+              </Text>
+              <FiltersMenu
+                availableFilters={filtersBySection[section]}
+                filters={filters}
+                setFilters={setFilters}
+              />
+            </Flex>
+          )}
+        </Flex>
+
+        <Flex flexDirection="column" gap="0.5rem" mt="0.75rem">
+          <SectionMenu
+            onSelect={handleUnifiedSelection}
+            selected={selectedQuestionId || section}
+            extractionQuestions={extractionQuestions.filter(q => q.questionId !== null)}
+            robQuestions={robQuestions.filter(q => q.questionId !== null)}
           />
-        </Flex>
-      )}
-    </Flex>
-    <Flex flexDirection="column" gap="0.5rem" mt="0.75rem">
-      <SectionMenu 
-        onSelect={handleUnifiedSelection} 
-        selected={selectedQuestionId || section} 
-        questions={allQuestions.filter(q => q.questionId !== null)}
-      />
-      
-      {section && !(
-        section === "Studies Funnel" ||
-        section === "Form Questions" ||
-        section === "Protocol"
-      ) && (
-        <SelectMenu
-          options={currentAllowedTypes}
-          selected={type}
-          onSelect={setType}
-          placeholder={t("selectMenu.chooseLayout")}
-        />
-      )}
-    </Flex>
-  </Flex>
 
-  <CardDefault backgroundColor="#fff" borderRadius="1rem" withShadow={false}>
-    <ExportProvider>
-      {section ? (
-        <ChartsRenderer
-          key={section + type + JSON.stringify(filters) + selectedQuestionId}
-          section={section}
-          type={type}
-          filters={filters}
-          selectedQuestionId={selectedQuestionId}
-        />
-      ) : (
-        <Flex direction="column" align="center" justify="center" h="800px" textAlign="center">
-          <Text fontSize="34px" fontWeight="bold" color="#2E4B6C" mb="2">
-            {t("graphicsArea.title") === "graphicsArea.title" ? "Graphics Area" : t("graphicsArea.title")}
-          </Text>
-          <Text fontSize="19px" color="gray.600">
-            {t("graphicsArea.instruction") === "graphicsArea.instruction" 
-              ? "Choose a section from the menu to filter the dashboard results." 
-              : t("graphicsArea.instruction")}
-          </Text>
+          {section && !(
+            section === "Studies Funnel" ||
+            section === "Form Questions" ||
+            section === "Protocol"
+          ) && (
+            <SelectMenu
+              options={currentAllowedTypes}
+              selected={type}
+              onSelect={setType}
+              placeholder={t("selectMenu.chooseLayout")}
+            />
+          )}
         </Flex>
-      )}
-    </ExportProvider>
-  </CardDefault>
-</FlexLayout>
+      </Flex>
+
+      <CardDefault backgroundColor="#fff" borderRadius="1rem" withShadow={false}>
+        <ExportProvider>
+          {section ? (
+            <ChartsRenderer
+              key={section + type + JSON.stringify(filters) + selectedQuestionId}
+              section={section}
+              type={type}
+              filters={filters}
+              selectedQuestionId={selectedQuestionId}
+            />
+          ) : (
+            <Flex direction="column" align="center" justify="center" h="800px" textAlign="center">
+              <Text fontSize="34px" fontWeight="bold" color="#2E4B6C" mb="2">
+                {t("graphicsArea.title") === "graphicsArea.title" ? "Graphics Area" : t("graphicsArea.title")}
+              </Text>
+              <Text fontSize="19px" color="gray.600">
+                {t("graphicsArea.instruction") === "graphicsArea.instruction"
+                  ? "Choose a section from the menu to filter the dashboard results."
+                  : t("graphicsArea.instruction")}
+              </Text>
+            </Flex>
+          )}
+        </ExportProvider>
+      </CardDefault>
+    </FlexLayout>
   );
 }
