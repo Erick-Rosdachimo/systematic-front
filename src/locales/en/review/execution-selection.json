@@ -33,7 +33,7 @@
         }
     },
     "statusSelect": {
-        "placeholder": "Select status",
+        "placeholder": "Select Status",
         "options": {
             "included": "Included",
             "duplicated": "Duplicated",

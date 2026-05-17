@@ -11,7 +11,6 @@ import { useTranslation } from "react-i18next";
 
 import { BsTable } from "react-icons/bs";
 import { PiArticleMediumBold } from "react-icons/pi";
-
 import { RiFlipHorizontalLine } from "react-icons/ri";
 
 import { ViewModel } from "../../../hooks/useLayoutPage";
@@ -69,8 +68,10 @@ export default function SelectLayout({
     },
   };
 
+  const activeLayoutInfo = buttons[layout];
+
   return (
-    <Menu>
+ <Menu>
       <MenuButton
         as={Button}
         w="24rem"
@@ -80,7 +81,21 @@ export default function SelectLayout({
         display="flex"
       >
         <Flex w="100%" justifyContent="space-between" alignItems="center">
-          <Box>{t("selectLayout.choose")}</Box>
+          <Flex align="center" gap="0.75rem">
+            {activeLayoutInfo && (
+              <Box
+                transform={
+                  activeLayoutInfo.rotate ? `rotate(${activeLayoutInfo.rotate})` : undefined
+                }
+              >
+                {activeLayoutInfo.icon}
+              </Box>
+            )}            
+            <Box fontWeight="medium">
+              {t("selectLayout.choose")}
+              {layout ? ` - ${capitalize(t(`selectLayout.type.${layout}`))}` : ""}
+            </Box>
+          </Flex>
           <ChevronDownIcon fontSize="1.25rem" />
         </Flex>
       </MenuButton>
