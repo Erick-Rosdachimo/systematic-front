@@ -11,6 +11,8 @@ import { ExportProvider } from "../../context/ExportContext";
 import { useTranslation } from "react-i18next";
 import { useFetchExtractionQuestions } from "@features/review/execution-extraction/services/useFetchExtractionQuestions";
 import { useFetchRobQuestions } from "@features/review/execution-extraction/services/useFetchRobQuestions";
+import ColumnVisibilityMenu from "@features/review/shared/components/common/menu/ColumnVisibilityMenu";
+import useVisibiltyColumns from "@features/review/shared/hooks/useVisibilityColumns";
 
 export default function Graphics() {
   const {
@@ -44,9 +46,9 @@ export default function Graphics() {
     }
   };
 
-  // const { columnsVisible, toggleColumnVisibility } = useVisibiltyColumns({
-  //   page: "Selection",
-  // });
+  const { columnsVisible, toggleColumnVisibility } = useVisibiltyColumns({
+    page: "Graphics-FormQuestions",
+  });
 
   return (
     <FlexLayout navigationType="Accordion">
@@ -68,26 +70,33 @@ export default function Graphics() {
           )}
         </Flex>
 
-        <Flex flexDirection="column" gap="0.5rem" mt="0.75rem">
-          <SectionMenu
-            onSelect={handleUnifiedSelection}
-            selected={selectedQuestionId || section}
-            extractionQuestions={extractionQuestions.filter(q => q.questionId !== null)}
-            robQuestions={robQuestions.filter(q => q.questionId !== null)}
-          />
-
-          {section && !(
-            section === "Studies Funnel" ||
-            section === "Form Questions" ||
-            section === "Protocol"
-          ) && (
-            <SelectMenu
-              options={currentAllowedTypes}
-              selected={type}
-              onSelect={setType}
-              placeholder={t("selectMenu.chooseLayout")}
+        <Flex gap="0.5rem" mt="0.75rem" alignItems={section === "Form Questions" ? "flex-start" : "flex-end"}>
+          {type === t("selectMenu.graphicsTypes.table") && (
+            <ColumnVisibilityMenu
+              columnsVisible={columnsVisible}
+              toggleColumnVisibility={toggleColumnVisibility}
             />
           )}
+          <Flex flexDirection="column" gap="0.5rem">
+            <SectionMenu
+              onSelect={handleUnifiedSelection}
+              selected={selectedQuestionId || section}
+              extractionQuestions={extractionQuestions.filter(q => q.questionId !== null)}
+              robQuestions={robQuestions.filter(q => q.questionId !== null)}
+            />
+            {section && !(
+              section === "Studies Funnel" ||
+              section === "Form Questions" ||
+              section === "Protocol"
+            ) && (
+              <SelectMenu
+                options={currentAllowedTypes}
+                selected={type}
+                onSelect={setType}
+                placeholder={t("selectMenu.chooseLayout")}
+              />
+            )}
+          </Flex>
         </Flex>
       </Flex>
 
