@@ -11,23 +11,21 @@ type Props = {
 };
 
 export default function CriteriaRenderer({ filteredStudies, stage, criteria, chartId}: Props) {
-  
   return (
     <Box 
       id={chartId}
       w="100%"
-      minH="1000px" 
+      minH="auto" 
       display="flex"
       justifyContent="center" 
       alignItems="center" 
-      pt={24} 
+      pt={10} 
       pb={10}
     >
       <Box w="100%" maxW="1600px" display="flex" justifyContent="center">
         <Box w="100%">
           <CriteriaBarChart criteria={criteria} stage={stage} filteredStudies={filteredStudies} />
         </Box>
-        
       </Box>
     </Box>
   );

@@ -8,7 +8,7 @@ type Props = {
   labels: (string | number)[];
   data: number[];
   color?: string;
-  height?: number;
+  height?: number | string;
   section: section;
 };
 

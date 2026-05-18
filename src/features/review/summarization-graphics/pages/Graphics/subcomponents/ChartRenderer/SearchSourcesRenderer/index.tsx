@@ -80,11 +80,11 @@ export default function SearchSourcesRenderer({
     <Box 
       id={chartId}
       w="100%"
-      minH={isTable ? "auto" : "1000px"} 
+      minH="auto" 
       display={isTable ? "block" : "flex"} 
       justifyContent="center" 
       alignItems="center"     
-      pt={isTable ? 4 : 24}
+      pt={isTable ? 4 : 10}
       pb={10}
     >
       <Box 

@@ -2,10 +2,10 @@ import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import { BubbleSeries } from "@features/review/summarization-graphics/hooks/useBubbleDataGeneric";
 
-const ROW_HEIGHT = 120; 
-const PADDING_V = 100;
-const MIN_HEIGHT = 650; 
-const MAX_HEIGHT = 900; 
+const ROW_HEIGHT = 80; 
+const PADDING_V = 80;
+const MIN_HEIGHT = 400; 
+const MAX_HEIGHT = 800; 
 
 type Props = {
   title: string;
@@ -150,7 +150,7 @@ export default function BubbleChart({ title, series, yCategories, yaxisText }: P
   };
 
   return (
-    <div id="bubble-chart-container" style={{ width: "100%", overflowX: "hidden" }}>
+    <div id="bubble-chart-container" style={{ width: "100%" }}>
       <style>{`
         #bubble-chart-container .apexcharts-reset-icon {
           transform: translateX(-7px); 

@@ -116,7 +116,7 @@ export const QuestionsCharts = ({
           ([label, ids]) => {
             const idsArray = Array.isArray(ids) ? ids : [];
             const filteredIds = idsArray
-              .map((id) => Number(id)) // 🔹 converte tudo para número
+              .map((id) => Number(id)) 
               .filter((id) => filteredStudyIds.has(id));
             return [label, filteredIds] as [string, number[]];
           }
@@ -148,11 +148,13 @@ export const QuestionsCharts = ({
         }
 
         return (
-          <Box key={question.questionId}>
-            <Text mb={2} fontWeight="bold">
+          <Box key={question.questionId} w="100%" display="block">
+            <Text mb={2} ml="2rem" fontWeight="bold" textAlign="left">
               {description}
             </Text>
-            {chartContent}
+            <Box w="100%" display="block">
+              {chartContent}
+            </Box>
           </Box>
         );
       })}

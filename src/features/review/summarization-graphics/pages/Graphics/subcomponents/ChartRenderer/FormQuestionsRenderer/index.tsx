@@ -1,4 +1,3 @@
-
 import { Box } from "@chakra-ui/react";
 import { QuestionsCharts } from "../../QuestionsCharts";
 import ArticleInterface from "@features/review/shared/types/ArticleInterface";
@@ -9,7 +8,6 @@ type Props = {
   type: string;
   chartId: string;
   selectedQuestionId?: string;
-
 };
 
 export default function FormQuestionsRenderer({
@@ -17,17 +15,21 @@ export default function FormQuestionsRenderer({
   type,
   selectedQuestionId,
   chartId,
-
 }: Props) {
   return (
-    <Box id={chartId}>
+    <Box 
+      id={chartId}
+      mx="-2rem !important" 
+      w="calc(100% + 4rem) !important" 
+      display="block" 
+      pt={4} 
+      pb={10}
+    >
       <QuestionsCharts
         filteredStudies={filteredStudies as ArticleInterface[]}
         type={type}
         selectedQuestionId={selectedQuestionId}
-     
       />
     </Box>
   );
 }
-

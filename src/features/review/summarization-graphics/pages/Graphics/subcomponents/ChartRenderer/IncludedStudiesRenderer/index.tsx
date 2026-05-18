@@ -17,7 +17,6 @@ export default function IncludedStudiesRenderer({ filteredStudies, type, chartId
   const { t } = useTranslation("review/summarization-graphics");
   const includedStudies = filteredStudies.filter((s) => s.extractionStatus === "INCLUDED");
 
-  // 👇 Criamos as variáveis pra saber quem tá na tela
   const isTable = type === "Table" || type === "Tabela";
   const isBubble = type === "Bubble Chart" || type === "Gráfico de Bolhas";
 
@@ -56,11 +55,11 @@ export default function IncludedStudiesRenderer({ filteredStudies, type, chartId
     <Box 
       id={chartId}
       w="100%"
-      minH={isTable ? "auto" : "1000px"} 
+      minH="auto" 
       display="flex"
       justifyContent="center" 
       alignItems={isTable ? "flex-start" : "center"}  
-      pt={isTable ? 4 : 24} 
+      pt={isTable ? 4 : 10} 
       pb={10}
     >
       <Box 

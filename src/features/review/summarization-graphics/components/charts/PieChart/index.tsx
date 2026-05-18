@@ -14,7 +14,7 @@ export default function PieChart({
   labels, 
   data, 
   width = 800, 
-  height = 600 
+  height = 500 
 } :Props) {
 
 const chartConfig = {

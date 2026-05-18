@@ -96,8 +96,8 @@ export function GenericExpandedTable<T>({
     <Box w="100%">
       <TableContainer
         w="100%"
-        maxH={isExporting ? "none" : "calc(100vh - 35rem)"}
-        overflowY={isExporting ? "visible" : "auto"}
+        maxH="auto"
+        overflowY="visible"
         borderRadius="1rem 1rem 0 0"
         boxShadow="lg"
         bg="white"
@@ -158,19 +158,6 @@ export function GenericExpandedTable<T>({
                           </>
                         )}
                       </Box>
-                    )}
-
-                    {!isExporting && (
-                      <Box
-                        position="absolute"
-                        top={0}
-                        right={0}
-                        h="100%"
-                        w="6px"
-                        cursor="col-resize"
-                        zIndex={10}
-                        _hover={{ bg: "blue.200" }}
-                      />
                     )}
                   </Th>
                 );
