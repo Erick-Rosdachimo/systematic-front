@@ -79,7 +79,7 @@ export default function ButtonsForSelection({
     criterias: fetchedCriterias,
     handlerUpdateCriteriasStructure,
     resetLocalCriterias,
-  } = useFetchAllCriteriasByArticle({ page });
+  } = useFetchAllCriteriasByArticle({ page, reloadArticles });
 
   const [historicalCriteria, setHistoricalCriteria] = useState<string[]>([]);
 
@@ -224,7 +224,6 @@ export default function ButtonsForSelection({
                 options={group.options}
                 isDisabled={group.isDisabled}
                 handlerUpdateCriteriasStructure={handlerUpdateCriteriasStructure}
-                reloadArticles={reloadArticles}
                 selectedCriteria={historicalCriteria}
               />
             </Box>

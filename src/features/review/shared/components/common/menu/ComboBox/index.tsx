@@ -1,5 +1,4 @@
 // External libraries
-import { useContext } from "react";
 import {
   Button,
   Checkbox,
@@ -13,12 +12,7 @@ import {
 import { HiOutlineCheckCircle, HiOutlineXCircle } from "react-icons/hi";
 
 // Hooks
-import useComboBoxSelection from "../../../../hooks/useComboBoxSelection";
 import useToaster from "@components/feedback/Toaster";
-
-// Context & Services
-import StudyContext from "@features/review/shared/context/StudiesContext";
-import { UseChangeStudyExtractionStatus } from "../../../../services/useChangeStudyExtractionStatus";
 
 // Types
 import type { PageLayout } from "../../../structure/LayoutFactory";
@@ -26,8 +20,6 @@ import type {
   OptionProps,
   OptionType,
 } from "../../../../services/useFetchAllCriteriasByArticle";
-import { SelectionArticles } from "@features/review/execution-selection/services/useFetchSelectionArticles";
-import { KeyedMutator } from "swr";
 
 interface IComboBoxProps {
   text: string;
@@ -45,7 +37,6 @@ interface IComboBoxProps {
     optionText: string,
     newValue: boolean,
   ) => void;
-  reloadArticles: KeyedMutator<SelectionArticles>;
   selectedCriteria?: string[];
 }
 
@@ -58,15 +49,9 @@ export default function ComboBox({
   status,
   groupKey,
   handlerUpdateCriteriasStructure,
-  reloadArticles,
   selectedCriteria = [],
 }: IComboBoxProps) {
-  const { handleIncludeItemClick, handleExcludeItemClick } =
-    useComboBoxSelection({ page, reloadArticles });
-
   const toast = useToaster();
-
-  const studiesContext = useContext(StudyContext);
 
   const { selectionStatus, extractionStatus } = status;
 
@@ -81,52 +66,15 @@ export default function ComboBox({
       status: "warning",
     });
 
-  const handleCheckboxToggle = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    optionText: string,
-  ) => {
+  const handleToggle = (option: OptionProps, newValue: boolean) => {
     if (hasInvalidStatus) {
       showDuplicatedWarning();
       return;
     }
-
-    const newValue = e.target.checked;
-
-    const updatedList = options.map((item) =>
-      item.text === optionText ? { ...item, isChecked: newValue } : item,
-    );
-
-    const activeItems = updatedList
-      .filter((data) => data.isChecked)
-      .map((item) => item.text);
-
-    if (
-      newValue === false &&
-      activeItems.length === 0 &&
-      extractionStatus !== "UNCLASSIFIED"
-    ) {
-      const articleId = studiesContext?.selectedArticleReview;
-      if (articleId && articleId !== -1) {
-        try {
-          await UseChangeStudyExtractionStatus({
-            studyReviewId: [articleId],
-            status: "UNCLASSIFIED",
-            criterias: [],
-          });
-        } catch (error) {
-          console.error("Error resetting extraction status via Menu", error);
-        }
-      }
-    }
-
-    handlerUpdateCriteriasStructure(groupKey, optionText, newValue);
-
-    if (text === "Include") {
-      handleIncludeItemClick(activeItems);
-    } else if (text === "Exclude") {
-      handleExcludeItemClick(activeItems);
-    }
+    handlerUpdateCriteriasStructure(groupKey, option.text, newValue);
   };
+
+  const codePrefix = text === "Include" ? "IC" : "EC";
 
   return (
     <Menu closeOnSelect={false}>
@@ -153,11 +101,11 @@ export default function ComboBox({
 
           return (
             <MenuItem key={index} maxW="25rem" overflow="auto">
-              {text === "Include" ? (
+              {text === "Include" || text === "Exclude" ? (
                 <Checkbox
                   isDisabled={isDisabled}
                   isChecked={option.isChecked}
-                  onChange={(e) => handleCheckboxToggle(e, option.text)}
+                  onChange={(e) => handleToggle(option, e.target.checked)}
                 >
                   <Tooltip
                     label={option.text}
@@ -171,29 +119,7 @@ export default function ComboBox({
                       fontWeight={isHighlighted ? "bold" : "normal"}
                       color={isHighlighted ? "black" : "inherit"}
                     >
-                      {`IC-${(index + 1).toString().padStart(2, "0")}`}
-                    </Text>
-                  </Tooltip>
-                </Checkbox>
-              ) : text === "Exclude" ? (
-                <Checkbox
-                  isDisabled={isDisabled}
-                  isChecked={option.isChecked}
-                  onChange={(e) => handleCheckboxToggle(e, option.text)}
-                >
-                  <Tooltip
-                    label={option.text}
-                    aria-label="Full criteria"
-                    p="1rem"
-                    hasArrow
-                  >
-                    <Text
-                      isTruncated
-                      maxW="20rem"
-                      fontWeight={isHighlighted ? "bold" : "normal"}
-                      color={isHighlighted ? "black" : "inherit"}
-                    >
-                      {`EC-${(index + 1).toString().padStart(2, "0")}`}
+                      {`${codePrefix}-${(index + 1).toString().padStart(2, "0")}`}
                     </Text>
                   </Tooltip>
                 </Checkbox>
