@@ -21,7 +21,7 @@ import { useExport } from "@features/review/summarization-graphics/context/Expor
 export type ColumnDef<T> = {
   key: keyof T;
   label: string;
-  width: string | number;
+  width?: string | number; 
   isNumeric?: boolean;
   sortable?: boolean;
   render?: (row: T) => React.ReactNode;
@@ -102,7 +102,7 @@ export function GenericExpandedTable<T>({
         boxShadow="lg"
         bg="white"
       >
-        <Table variant="unstyled" size="md" layout="fixed">
+        <Table variant="unstyled" size="md" layout="fixed" w="100%">
           <Thead
             position={isExporting ? "static" : "sticky"}
             top={0}
@@ -117,6 +117,7 @@ export function GenericExpandedTable<T>({
                 return (
                   <Th
                     key={String(col.key)}
+                    w={col.width} 
                     position="relative"
                     fontSize="medium"
                     color="#263C56"
@@ -224,17 +225,25 @@ export function GenericExpandedTable<T>({
         </Table>
       </TableContainer>
 
-      {!isExporting && (
-        <PaginationControl
-          currentPage={currentPage}
-          itensPerPage={itensPerPage}
-          quantityOfPages={quantityOfPages}
-          handleNextPage={handleNextPage}
-          handlePrevPage={handlePrevPage}
-          handleBackToInitial={handleBackToInitial}
-          handleGoToFinal={handleGoToFinal}
-          changeQuantityOfItens={changeQuantityOfItens}
-        />
+      {/* 👇 A MÁGICA DA PAGINAÇÃO: Só aparece se tiver mais de 10 itens e fica no canto direito! */}
+      {!isExporting && data.length > 10 && (
+        <Box 
+          display="flex" 
+          w="100%" 
+          justifyContent="flex-end" 
+          mt={4} 
+        >
+          <PaginationControl
+            currentPage={currentPage}
+            itensPerPage={itensPerPage}
+            quantityOfPages={quantityOfPages}
+            handleNextPage={handleNextPage}
+            handlePrevPage={handlePrevPage}
+            handleBackToInitial={handleBackToInitial}
+            handleGoToFinal={handleGoToFinal}
+            changeQuantityOfItens={changeQuantityOfItens}
+          />
+        </Box>
       )}
     </Box>
   );
