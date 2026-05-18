@@ -156,7 +156,26 @@
                 "label": "Extraction Questions",
                 "question": "QUESTION",
                 "type": "TYPE",
-                "noDataFound": "No data found"
+                "noDataFound": "No data found",
+                "questionType": {
+                    "textual": "textual",
+                    "pickList": "pick list",
+                    "numberedScale": "number scale", 
+                    "labeledList": "labeled list",
+                    "pickMany": "pick many"
+                },
+                "toaster": {
+                    "referenceCode": {
+                        "title": "A reference code is required.",
+                        "description": "Please fill in the Code field before saving."
+                    },
+                    "duplicated": {
+                        "title1": "The reference code",
+                        "title2": "is already in use.",
+                        "description": "Please choose another one."
+                    },
+                    "finishEditing": "Finish editing the current row before adding a new one."
+                }
             }
         }
     },

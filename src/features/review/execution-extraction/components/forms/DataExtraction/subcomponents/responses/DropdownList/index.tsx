@@ -1,6 +1,7 @@
 // External library
 import { useState } from "react";
 import { FormControl, FormLabel } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 
 // Components
 import SelectInput from "@components/common/inputs/SelectInput";
@@ -28,7 +29,8 @@ export default function DropdownList({
   onResponse,
 }: DropdownListProps) {
   const [selected, setSelected] = useState(answer);
-
+  const { t } = useTranslation("review/execution-extraction");
+  
   const handleSelectChange = (value: string) => {
     setSelected(value);
     onResponse(value);
@@ -43,7 +45,7 @@ export default function DropdownList({
         onSelect={handleSelectChange}
         selectedValue={selected}
         page="extraction"
-        placeholder="Options"
+        placeholder={t("extractionForm.dropdownList")}
         isInvalid={isInvalid}
       />
     </FormControl>
