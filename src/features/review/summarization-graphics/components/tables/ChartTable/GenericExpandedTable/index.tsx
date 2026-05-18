@@ -225,7 +225,6 @@ export function GenericExpandedTable<T>({
         </Table>
       </TableContainer>
 
-      {/* 👇 A MÁGICA DA PAGINAÇÃO: Só aparece se tiver mais de 10 itens e fica no canto direito! */}
       {!isExporting && data.length > 10 && (
         <Box 
           display="flex" 

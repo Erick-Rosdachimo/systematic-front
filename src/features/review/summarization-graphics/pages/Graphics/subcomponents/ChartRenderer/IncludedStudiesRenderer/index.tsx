@@ -31,7 +31,6 @@ export default function IncludedStudiesRenderer({ filteredStudies, type, chartId
     );
   } else if (type === "Line Chart" || type === "Gráfico de Linhas") {
     content = (
-      // 👇 Armadura de 100% pro Line Chart não virar um palito de dente!
       <Box w="100%">
         <IncludedStudiesLineChart filteredStudies={includedStudies} />
       </Box>
@@ -54,20 +53,19 @@ export default function IncludedStudiesRenderer({ filteredStudies, type, chartId
   }
 
   return (
-    // 👇 O Palco Padrão Ouro que criamos antes!
     <Box 
       id={chartId}
       w="100%"
-      minH={isTable ? "auto" : "1000px"} // Mantive seus 1000px de altura pros gráficos
+      minH={isTable ? "auto" : "1000px"} 
       display="flex"
       justifyContent="center" 
-      alignItems={isTable ? "flex-start" : "center"} // Tabela pro topo, gráfico pro meio  
-      pt={isTable ? 4 : 24} // Empurrãozinho pra descolar os gráficos do teto
+      alignItems={isTable ? "flex-start" : "center"}  
+      pt={isTable ? 4 : 24} 
       pb={10}
     >
       <Box 
         w="100%" 
-        maxW={isBubble ? "1600px" : "1200px"} // Bubble ganha tela quase toda, os outros 1200px
+        maxW={isBubble ? "1600px" : "1200px"} 
         display="flex" 
         justifyContent="center"
       > 

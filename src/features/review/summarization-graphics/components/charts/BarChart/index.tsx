@@ -1,6 +1,6 @@
 import { ApexOptions } from "apexcharts";
 import Chart from "react-apexcharts";
-import { Box } from "@chakra-ui/react"; // 👈 Trouxemos a armadura do Chakra UI!
+import { Box } from "@chakra-ui/react"; 
 
 type section = 'inclusion' | 'exclusion' | 'searchSource' | 'questions';
 type Props = {

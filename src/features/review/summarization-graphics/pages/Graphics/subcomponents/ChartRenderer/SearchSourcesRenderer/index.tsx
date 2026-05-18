@@ -1,13 +1,9 @@
 import ArticleInterface from "@features/review/shared/types/ArticleInterface";
 import { StudyInterface } from "@features/review/shared/types/IStudy";
-
 import BarChart from "@features/review/summarization-graphics/components/charts/BarChart";
 import BubbleChart from "@features/review/summarization-graphics/components/charts/BubbleChart";
 import PieChart from "@features/review/summarization-graphics/components/charts/PieChart";
-
-// 👇 Importação nomeada casando certinho com o arquivo da tabela ali de cima
 import { SearchSorcesTable } from "@features/review/summarization-graphics/components/tables/SearchSoucesTable";
-
 import { Box } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 
@@ -75,7 +71,6 @@ export default function SearchSourcesRenderer({
       />
     );
   } else if (isTable) {
-    // 👇 Renderiza sem pedir props
     content = <SearchSorcesTable />;
   } else {
     content = <div>{t("typeNotSupported")}</div>;
