@@ -44,6 +44,10 @@ export default function Graphics() {
     }
   };
 
+  // const { columnsVisible, toggleColumnVisibility } = useVisibiltyColumns({
+  //   page: "Selection",
+  // });
+
   return (
     <FlexLayout navigationType="Accordion">
       <Flex justifyContent="space-between" alignItems="flex-start" w="100%" mb="1rem">
