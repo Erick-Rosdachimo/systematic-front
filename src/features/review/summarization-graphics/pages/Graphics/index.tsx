@@ -59,7 +59,7 @@ export default function Graphics() {
     "Included Studies": "Graphics-IncludedStudies",
     "Form Questions": "Graphics-FormQuestions",
   }
-  
+
   useEffect(() => {
     const tableSelected = tableMap[section] ?? null;
     if(tableSelected) setTablePage(tableSelected);
@@ -124,6 +124,7 @@ export default function Graphics() {
               type={type}
               filters={filters}
               selectedQuestionId={selectedQuestionId}
+              columnsVisible={columnsVisible}
             />
           ) : (
             <Flex direction="column" align="center" justify="center" h="800px" textAlign="center">

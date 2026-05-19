@@ -8,6 +8,7 @@ import { fetchStudiesBySource, HttpResponse } from "@features/review/summarizati
 import useGetAllReviewArticles from "@features/review/shared/services/useGetAllReviewArticles";
 import useFetchDataBases from "@features/review/shared/services/useFetchDataBases";
 import { ColumnDef, GenericExpandedTable } from "../ChartTable/GenericExpandedTable";
+import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
 
 
 type SearchSourceRow = {
@@ -25,7 +26,7 @@ type Description = {
   total: number;
 };
 
-export const SearchSorcesTable = () => {
+export const SearchSorcesTable = ({ columnsVisible }: {columnsVisible: ColumnVisibility}) => {
   const { t } = useTranslation("review/summarization-graphics");
   const { databases } = useFetchDataBases();
   const { articles } = useGetAllReviewArticles();
@@ -106,5 +107,9 @@ export const SearchSorcesTable = () => {
     { key: "precisionRate", label: t("searchSourcesTable.precisionRate"), width: 120, isNumeric: true, sortable: true, render: (row) => row.precisionRate.toFixed(2) + "%" },
   ];
 
-  return <GenericExpandedTable<SearchSourceRow> data={rows} columns={columns}/>;
+  const visibleColumns = columns.filter((column) => {
+    return columnsVisible[column.key as keyof ColumnVisibility];
+  });
+  
+  return <GenericExpandedTable<SearchSourceRow> data={rows} columns={visibleColumns}/>;
 };

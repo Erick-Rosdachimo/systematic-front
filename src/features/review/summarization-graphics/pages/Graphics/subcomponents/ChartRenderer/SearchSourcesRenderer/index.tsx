@@ -14,17 +14,20 @@ import useBubbleDataGeneric, {
 } from "@features/review/summarization-graphics/hooks/useBubbleDataGeneric";
 
 import { barchartBox } from "../../../styles";
+import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
 
 type Props = {
   filteredStudies: (StudyInterface | ArticleInterface)[];
   type: string;
   chartId: string;
+  columnsVisible: ColumnVisibility;
 };
 
 export default function SearchSourcesRenderer({
   filteredStudies,
   type,
   chartId,
+  columnsVisible,
 }: Props) {
   const { t } = useTranslation("review/summarization-graphics");
   const sourceCountMap = filteredStudies.reduce<Record<string, number>>(
@@ -72,7 +75,7 @@ export default function SearchSourcesRenderer({
       />
     );
   } else if (type === "Table" || type === "Tabela") {
-    content = <SearchSorcesTable />;
+    content = <SearchSorcesTable columnsVisible={columnsVisible} />;
   } else {
     content = <div>{t("typeNotSupported")}</div>;
   }
