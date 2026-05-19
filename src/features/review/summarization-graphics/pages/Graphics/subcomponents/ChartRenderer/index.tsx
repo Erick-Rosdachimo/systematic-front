@@ -148,6 +148,7 @@ export default function ChartsRenderer({
         {...props}
         chartId={chartId}
         selectedQuestionId={selectedQuestionId}
+        columnsVisible={columnsVisible}
       />
     ),
     "Studies Funnel": () => <StudiesFunnelRenderer chartId={chartId} />,

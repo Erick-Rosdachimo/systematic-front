@@ -1,3 +1,4 @@
+import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
 import { ColumnDef, GenericExpandedTable } from "../ChartTable/GenericExpandedTable";
 
 import { useTranslation } from "react-i18next";
@@ -11,9 +12,10 @@ type QuestionRow = {
 
 interface QuestionsTableProps {
   data: Record<string, number[]>;
+  columnsVisible: ColumnVisibility;
 }
 
-export const QuestionsTable = ({ data }: QuestionsTableProps) => {
+export const QuestionsTable = ({ data, columnsVisible }: QuestionsTableProps) => {
   const { t } = useTranslation("review/summarization-graphics");
 
   const totalResponses = Object.values(data).reduce((sum, ids) => sum + ids.length, 0);
@@ -35,6 +37,16 @@ const columns: ColumnDef<QuestionRow>[] = [
   { key: "percentage", label: t("questionsTable.percentage"), width: 100, isNumeric: true, sortable: true, render: (row) => row.percentage.toFixed(2) + "%" },
 ];
 
+const visibleColumns = columns.filter((column) => {
+  const visibilityKey =
+    column.key === "total"
+      ? "totalAnswers"
+      : column.key === "percentage"
+      ? "percentageOfTotal"
+      : column.key;
 
-  return <GenericExpandedTable<QuestionRow> data={rows} columns={columns} />;
+  return columnsVisible[visibilityKey as keyof ColumnVisibility] === true;
+});
+
+  return <GenericExpandedTable<QuestionRow> data={rows} columns={visibleColumns} />;
 };
