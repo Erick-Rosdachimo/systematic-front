@@ -109,7 +109,7 @@ export default function ChartsRenderer({
       <SearchSourcesRenderer {...props} columnsVisible={columnsVisible} chartId={chartId} />
     ),
     "Included Studies": (props: any) => (
-      <IncludedStudiesRenderer {...props} chartId={chartId} />
+      <IncludedStudiesRenderer {...props} columnsVisible={columnsVisible} chartId={chartId} />
     ),
     "S1_Inclusion Criteria": (props: any) => (
       <CriteriaRenderer
