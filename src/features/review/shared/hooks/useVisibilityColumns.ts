@@ -1,5 +1,5 @@
 // External library
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 
 // Types
 import { PageLayout } from "../components/structure/LayoutFactory";
@@ -172,6 +172,10 @@ export default function useVisibiltyColumns({
 
   const [columnsVisible, setColumnsVisible] =
     useState<ColumnVisibility>(initialVisibility);
+
+  useEffect(() => {
+    setColumnsVisible(initialVisibility);
+  }, [initialVisibility]);
 
   const toggleColumnVisibility = (column: keyof ColumnVisibility) => {
     setColumnsVisible((prev) => ({
