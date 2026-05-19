@@ -105,7 +105,7 @@ export default function ColumnVisibilityMenu({
                       toggleColumnVisibility(key as keyof ColumnVisibility)
                     }
                   />
-                  <span style={{ marginLeft: 8 }}>{t(`columnVisibilityMenu.label.${label.toLowerCase()}`)}</span>
+                  <span>{t(`columnVisibilityMenu.label.${label.toLowerCase()}`)}</span>
                 </label>
               ))}
           </motion.div>
