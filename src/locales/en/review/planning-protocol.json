@@ -174,7 +174,11 @@
                         "title2": "is already in use.",
                         "description": "Please choose another one."
                     },
-                    "finishEditing": "Finish editing the current row before adding a new one."
+                    "finishEditing": "Finish editing the current row before adding a new one.",
+                    "questionType": {
+                        "title": "Question type is required.",
+                        "description": "Please fill in the question type field before saving."
+                    }
                 }
             }
         }

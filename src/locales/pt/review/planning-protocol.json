@@ -174,7 +174,11 @@
                         "title2": "já está sendo usado.",
                         "description": "Por favor, escolha outro."
                     },
-                    "finishEditing": "Termine de editar a linha atual antes de adicionar uma nova."
+                    "finishEditing": "Termine de editar a linha atual antes de adicionar uma nova.",
+                    "questionType": {
+                        "title": "Tipo de questão é obrigatório.",
+                        "description": "Por favor, preencha o campo de tipo de questão antes de salvar."
+                    }
                 }
             }
         }
