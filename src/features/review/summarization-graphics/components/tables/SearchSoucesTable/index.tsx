@@ -1,4 +1,5 @@
 import {
+  Box,
   Text,
 } from "@chakra-ui/react";
 import { useEffect, useMemo, useState } from "react";
@@ -8,7 +9,6 @@ import { fetchStudiesBySource, HttpResponse } from "@features/review/summarizati
 import useGetAllReviewArticles from "@features/review/shared/services/useGetAllReviewArticles";
 import useFetchDataBases from "@features/review/shared/services/useFetchDataBases";
 import { ColumnDef, GenericExpandedTable } from "../ChartTable/GenericExpandedTable";
-
 
 type SearchSourceRow = {
   source: string;
@@ -25,6 +25,7 @@ type Description = {
   total: number;
 };
 
+// 👇 Exportação nomeada correta!
 export const SearchSorcesTable = () => {
   const { t } = useTranslation("review/summarization-graphics");
   const { databases } = useFetchDataBases();
@@ -36,7 +37,6 @@ export const SearchSorcesTable = () => {
     excluded: 0,
     total: 0,
   });
-
 
   useEffect(() => {
     const loadData = async () => {
@@ -51,7 +51,6 @@ export const SearchSorcesTable = () => {
     };
     loadData();
   }, [databases]);
-
 
   const { includedStudiesBySource} = useMemo(() => {
     const includedArticles = articles.filter((a) => a.selectionStatus === "INCLUDED");
@@ -98,13 +97,17 @@ export const SearchSorcesTable = () => {
   });
 
   const columns: ColumnDef<SearchSourceRow>[] = [
-    { key: "source", label: t("searchSourcesTable.source"), width: 200, sortable: true },
-    { key: "included", label: t("searchSourcesTable.included"), width: 100, isNumeric: true, sortable: true },
-    { key: "excluded", label: t("searchSourcesTable.excluded"), width: 100, isNumeric: true, sortable: true },
-    { key: "total", label: t("searchSourcesTable.total"), width: 100, isNumeric: true, sortable: true },
-    { key: "indexingRate", label: t("searchSourcesTable.indexingRate"), width: 120, isNumeric: true, sortable: true, render: (row) => row.indexingRate.toFixed(2) + "%" },
-    { key: "precisionRate", label: t("searchSourcesTable.precisionRate"), width: 120, isNumeric: true, sortable: true, render: (row) => row.precisionRate.toFixed(2) + "%" },
+    { key: "source", label: t("searchSourcesTable.source"), sortable: true, width: "25%" },
+    { key: "included", label: t("searchSourcesTable.included"), isNumeric: true, sortable: true, width: "15%" },
+    { key: "excluded", label: t("searchSourcesTable.excluded"), isNumeric: true, sortable: true, width: "15%" },
+    { key: "total", label: t("searchSourcesTable.total"), isNumeric: true, sortable: true, width: "15%" },
+    { key: "indexingRate", label: t("searchSourcesTable.indexingRate"), isNumeric: true, sortable: true, render: (row) => row.indexingRate.toFixed(2) + "%", width: "15%" },
+    { key: "precisionRate", label: t("searchSourcesTable.precisionRate"), isNumeric: true, sortable: true, render: (row) => row.precisionRate.toFixed(2) + "%", width: "15%" },
   ];
 
-  return <GenericExpandedTable<SearchSourceRow> data={rows} columns={columns}/>;
+  return (
+    <Box w="100%">
+      <GenericExpandedTable<SearchSourceRow> data={rows} columns={columns}/>
+    </Box>
+  );
 };

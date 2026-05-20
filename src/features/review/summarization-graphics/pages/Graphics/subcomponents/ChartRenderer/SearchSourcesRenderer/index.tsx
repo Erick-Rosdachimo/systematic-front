@@ -1,19 +1,15 @@
 import ArticleInterface from "@features/review/shared/types/ArticleInterface";
 import { StudyInterface } from "@features/review/shared/types/IStudy";
-
 import BarChart from "@features/review/summarization-graphics/components/charts/BarChart";
 import BubbleChart from "@features/review/summarization-graphics/components/charts/BubbleChart";
 import PieChart from "@features/review/summarization-graphics/components/charts/PieChart";
 import { SearchSorcesTable } from "@features/review/summarization-graphics/components/tables/SearchSoucesTable";
-
 import { Box } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 
 import useBubbleDataGeneric, {
   BubbleItem,
 } from "@features/review/summarization-graphics/hooks/useBubbleDataGeneric";
-
-import { barchartBox } from "../../../styles";
 
 type Props = {
   filteredStudies: (StudyInterface | ArticleInterface)[];
@@ -41,6 +37,9 @@ export default function SearchSourcesRenderer({
   const data = Object.values(sourceCountMap);
 
   let content;
+
+  const isTable = type === "Table" || type === "Tabela";
+  const isBubble = type === t("selectMenu.graphicsTypes.bubbleChart");
 
   if (type === t("selectMenu.graphicsTypes.pieChart")) {
     content = <PieChart title={t("sectionMenu.sections.searchSources")} labels={labels} data={data} />;
@@ -71,19 +70,31 @@ export default function SearchSourcesRenderer({
         yaxisText={t("sectionMenu.sections.searchSources")}
       />
     );
-  } else if (type === "Table" || type === "Tabela") {
+  } else if (isTable) {
     content = <SearchSorcesTable />;
   } else {
     content = <div>{t("typeNotSupported")}</div>;
   }
+  
   return (
-
-    <Box
+    <Box 
       id={chartId}
-      w={type === t("selectMenu.graphicsTypes.bubbleChart") ? "100%" : undefined}
-      sx={type === t("selectMenu.graphicsTypes.barChart") ? barchartBox : undefined}
+      w="100%"
+      minH="auto" 
+      display={isTable ? "block" : "flex"} 
+      justifyContent="center" 
+      alignItems="center"     
+      pt={isTable ? 4 : 10}
+      pb={10}
     >
-      {content}
+      <Box 
+        w="100%" 
+        maxW={isTable ? "100%" : isBubble ? "1600px" : "1200px"} 
+        display={isTable ? "block" : "flex"} 
+        justifyContent="center"
+      > 
+        {content}
+      </Box>
     </Box>
   );
 }
