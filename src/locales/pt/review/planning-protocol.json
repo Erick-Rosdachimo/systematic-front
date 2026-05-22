@@ -20,7 +20,19 @@
             },
             "researchers": {
                 "label": "Pesquisadores",
-                "placeholder": "Insira o nome dos pesquisadores "
+                "placeholder": "Adicione um pesquisador",
+                "noResearchersFound": "Nenhum pesquisador encontrado",
+                "status": {
+                    "pending": "Pendente",
+                    "expired": "Expirado",
+                    "excluding": "Excluído"
+                },
+                "role": {
+                    "role": "Função",
+                    "admin": "administrador",
+                    "reviewer": "revisor",
+                    "owner": "dono"
+                }
             }
         },
         "alert": {

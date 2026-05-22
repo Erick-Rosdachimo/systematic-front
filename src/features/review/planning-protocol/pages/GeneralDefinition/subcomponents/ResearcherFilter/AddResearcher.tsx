@@ -1,8 +1,10 @@
+import { useTranslation } from "react-i18next";
 import { Flex, Input, Box, Avatar, Text } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import EventButton from "@components/common/buttons/EventButton";
 
 export default function AddResearcher({researchers, setResearchers}:any) {
+  const { t } = useTranslation("review/planning-protocol"); 
   // Backend
   function filterSearch(search: string){
     return function (researcher:any){
@@ -84,7 +86,7 @@ export default function AddResearcher({researchers, setResearchers}:any) {
           ref={inputRef}
           style = {{ backgroundColor: chosenResearcherId !== "" ? "#C9D9E5" : "#ffffffff" }} flex="1" minW={0} size="md"  
           value={search} 
-          placeholder="Add a researcher" 
+          placeholder={t("generalDefinition.input.researchers.placeholder")} 
           onChange = {handleInputChange} 
           onFocus={() => setSuggestionsOpen(true)}
           onBlur={() => setSuggestionsOpen(false)}
@@ -114,7 +116,7 @@ export default function AddResearcher({researchers, setResearchers}:any) {
                     </Flex>
                   ))
                 ) : (
-                  <Text color="gray.500" textAlign="center">No researchers found</Text>
+                  <Text color="gray.500" textAlign="center">{t("generalDefinition.input.researchers.noResearchersFound")}</Text>
                 )
             }
         </Box>

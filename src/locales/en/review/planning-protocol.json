@@ -20,7 +20,19 @@
             },
             "researchers": {
                 "label": "Researchers",
-                "placeholder": "Enter the name of the researchers "
+                "placeholder": "Add a researcher",
+                "noResearchersFound": "No researchers found",
+                "status": {
+                    "pending": "Pending",
+                    "expired": "Expired",
+                    "excluding": "Excluding"               
+                },
+                "role": {
+                    "role": "Role",
+                    "admin": "admin",
+                    "reviewer": "reviewer",
+                    "owner": "owner"
+                }
             }
         },
         "alert": {

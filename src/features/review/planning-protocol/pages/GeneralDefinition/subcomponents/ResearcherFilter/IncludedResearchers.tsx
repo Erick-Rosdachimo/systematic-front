@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { ChevronDownIcon, DeleteIcon } from "@chakra-ui/icons";
 import { Avatar, Button, Flex, Icon, Menu, MenuButton, MenuItem, MenuList, Text } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
@@ -5,6 +6,7 @@ import { useState, useEffect } from "react";
 const AVAILABLE_ROLES = ["admin", "reviewer", "owner"] as const;
 
 export default function IncludedResearchers({researchers, setResearchers}:any) {
+  const { t } = useTranslation("review/planning-protocol"); 
   // Backend
   function filterSearch(search: string){
     return function (researcher:any){
@@ -88,7 +90,7 @@ export default function IncludedResearchers({researchers, setResearchers}:any) {
           <Flex align="center" gap={5}>
             {(researcher.status === "pending" || researcher.status === "expired" || researcher.status === "excluding") && (
               <Text color="gray.500">
-                {researcher.status.charAt(0).toUpperCase() + researcher.status.slice(1)}
+                {t(`generalDefinition.input.researchers.status.${researcher.status}`)}
               </Text>
             )}
             {researcher.status == "included" && (
@@ -100,7 +102,7 @@ export default function IncludedResearchers({researchers, setResearchers}:any) {
                   rightIcon={<ChevronDownIcon />}
                   fontWeight="normal"
                 >
-                  Role: {researcher.role}
+                  {`${t("generalDefinition.input.researchers.role.role")}: ${t(`generalDefinition.input.researchers.role.${researcher.role}`)}`}
                 </MenuButton>
                 <MenuList>
                   {AVAILABLE_ROLES.map((role) => (
@@ -109,7 +111,7 @@ export default function IncludedResearchers({researchers, setResearchers}:any) {
                       isDisabled={role === researcher.role}
                       onClick={() => changeRole(researcher.id, role)}
                     >
-                      {role}
+                      {t(`generalDefinition.input.researchers.role.${role}`)}
                     </MenuItem>
                   ))}
                 </MenuList>
