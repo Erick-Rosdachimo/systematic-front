@@ -29,7 +29,17 @@
             "selection": "Seleção",
             "extraction": "Extração",
             "score": "Pontuação",
-            "priority": "Prioridade"
+            "priority": "Prioridade",
+            "included": "Incluídos",
+            "excluded": "Excluídos",
+            "total": "Total",
+            "indexingrate": "Taxa de Indexação",
+            "precisionrate": "Taxa de Precisão",
+            "sources": "Fontes",
+            "ic": "IC",
+            "studies": "Estudos",
+            "totalanswers": "Total",
+            "percentageoftotal": "Porcentagem"
         }
     },
     "statusSelect": {

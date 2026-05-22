@@ -1,7 +1,4 @@
-import {
-  Box,
-  Text,
-} from "@chakra-ui/react";
+import { Text } from "@chakra-ui/react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -9,6 +6,7 @@ import { fetchStudiesBySource, HttpResponse } from "@features/review/summarizati
 import useGetAllReviewArticles from "@features/review/shared/services/useGetAllReviewArticles";
 import useFetchDataBases from "@features/review/shared/services/useFetchDataBases";
 import { ColumnDef, GenericExpandedTable } from "../ChartTable/GenericExpandedTable";
+import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
 
 type SearchSourceRow = {
   source: string;
@@ -25,8 +23,7 @@ type Description = {
   total: number;
 };
 
-// 👇 Exportação nomeada correta!
-export const SearchSorcesTable = () => {
+export const SearchSorcesTable = ({ columnsVisible }: {columnsVisible: ColumnVisibility}) => {
   const { t } = useTranslation("review/summarization-graphics");
   const { databases } = useFetchDataBases();
   const { articles } = useGetAllReviewArticles();
@@ -105,9 +102,9 @@ export const SearchSorcesTable = () => {
     { key: "precisionRate", label: t("searchSourcesTable.precisionRate"), isNumeric: true, sortable: true, render: (row) => row.precisionRate.toFixed(2) + "%", width: "15%" },
   ];
 
-  return (
-    <Box w="100%">
-      <GenericExpandedTable<SearchSourceRow> data={rows} columns={columns}/>
-    </Box>
-  );
+  const visibleColumns = columns.filter((column) => {
+    return columnsVisible[column.key as keyof ColumnVisibility];
+  });
+  
+  return <GenericExpandedTable<SearchSourceRow> data={rows} columns={visibleColumns}/>;
 };

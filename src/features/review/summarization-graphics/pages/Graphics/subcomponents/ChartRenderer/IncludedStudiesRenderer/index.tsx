@@ -6,14 +6,17 @@ import BubbleChart from "@features/review/summarization-graphics/components/char
 import useBubbleDataGeneric, { BubbleItem } from "@features/review/summarization-graphics/hooks/useBubbleDataGeneric";
 import { Box } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
+import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
+
 
 type Props = {
   filteredStudies: (StudyInterface | ArticleInterface)[];
   type: string;
   chartId: string;
+  columnsVisible: ColumnVisibility;
 };
 
-export default function IncludedStudiesRenderer({ filteredStudies, type, chartId}: Props) {
+export default function IncludedStudiesRenderer({ filteredStudies, type, chartId, columnsVisible}: Props) {
   const { t } = useTranslation("review/summarization-graphics");
   const includedStudies = filteredStudies.filter((s) => s.extractionStatus === "INCLUDED");
 
@@ -25,7 +28,7 @@ export default function IncludedStudiesRenderer({ filteredStudies, type, chartId
   if (isTable) {
     content = (
       <Box w="100%">
-        <LayoutFactoryChart articles={includedStudies as ArticleInterface[]} isLoading={false} />
+        <LayoutFactoryChart columnsVisible={columnsVisible} articles={includedStudies as ArticleInterface[]} isLoading={false} />
       </Box>
     );
   } else if (type === "Line Chart" || type === "Gráfico de Linhas") {

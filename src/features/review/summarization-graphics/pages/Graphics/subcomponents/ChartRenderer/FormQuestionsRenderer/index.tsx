@@ -2,12 +2,14 @@ import { Box } from "@chakra-ui/react";
 import { QuestionsCharts } from "../../QuestionsCharts";
 import ArticleInterface from "@features/review/shared/types/ArticleInterface";
 import { StudyInterface } from "@features/review/shared/types/IStudy";
+import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
 
 type Props = {
   filteredStudies: (StudyInterface | ArticleInterface)[];
   type: string;
   chartId: string;
   selectedQuestionId?: string;
+  columnsVisible: ColumnVisibility;
 };
 
 export default function FormQuestionsRenderer({
@@ -15,6 +17,7 @@ export default function FormQuestionsRenderer({
   type,
   selectedQuestionId,
   chartId,
+  columnsVisible
 }: Props) {
   return (
     <Box 
@@ -29,6 +32,7 @@ export default function FormQuestionsRenderer({
         filteredStudies={filteredStudies as ArticleInterface[]}
         type={type}
         selectedQuestionId={selectedQuestionId}
+        columnsVisible={columnsVisible}
       />
     </Box>
   );

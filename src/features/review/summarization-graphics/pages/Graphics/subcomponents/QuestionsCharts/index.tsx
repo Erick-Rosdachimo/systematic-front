@@ -4,11 +4,13 @@ import BarChart from "../../../../components/charts/BarChart";
 import { QuestionsTable } from "../../../../components/tables/QuestionsTable";
 import useFetchQuestionAnswers from "../../../../services/useFetchQuestionAnwers";
 import ArticleInterface from "@features/review/shared/types/ArticleInterface";
+import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
 
 type Props = {
   selectedQuestionId?: string;
   filteredStudies: ArticleInterface[];
   type: string;
+  columnsVisible: ColumnVisibility
 };
 
 type Question = {
@@ -82,6 +84,7 @@ export const QuestionsCharts = ({
   selectedQuestionId,
   filteredStudies,
   type,
+  columnsVisible
 }: Props) => {
   const { extractionAnswers, isLoadingExtractionAnswers } =
     useFetchQuestionAnswers();
@@ -144,7 +147,7 @@ export const QuestionsCharts = ({
             />
           );
         } else {
-          chartContent = <QuestionsTable data={filteredAnswer} />;
+          chartContent = <QuestionsTable columnsVisible={columnsVisible} data={filteredAnswer} />;
         }
 
         return (

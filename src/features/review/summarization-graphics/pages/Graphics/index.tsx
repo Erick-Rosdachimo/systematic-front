@@ -11,6 +11,10 @@ import { ExportProvider } from "../../context/ExportContext";
 import { useTranslation } from "react-i18next";
 import { useFetchExtractionQuestions } from "@features/review/execution-extraction/services/useFetchExtractionQuestions";
 import { useFetchRobQuestions } from "@features/review/execution-extraction/services/useFetchRobQuestions";
+import ColumnVisibilityMenu from "@features/review/shared/components/common/menu/ColumnVisibilityMenu";
+import useVisibiltyColumns from "@features/review/shared/hooks/useVisibilityColumns";
+import { PageLayout } from "@features/review/shared/components/structure/LayoutFactory";
+import { useState, useEffect } from "react";
 
 export default function Graphics() {
   const {
@@ -30,6 +34,8 @@ export default function Graphics() {
   const { questions: extractionQuestions = [] } = useFetchExtractionQuestions();
   const { questions: robQuestions = [] } = useFetchRobQuestions();
 
+  const [tablePage, setTablePage] = useState<PageLayout>("Graphics-SearchSources");
+
   const { t } = useTranslation("review/summarization-graphics");
 
   const handleUnifiedSelection = (value: string) => {
@@ -44,6 +50,21 @@ export default function Graphics() {
     }
   };
 
+  const { columnsVisible, toggleColumnVisibility } = useVisibiltyColumns({
+    page: tablePage,
+  });
+
+  const tableMap: Record<string, PageLayout | null> = {
+    "Search Sources": "Graphics-SearchSources",
+    "Included Studies": "Graphics-IncludedStudies",
+    "Form Questions": "Graphics-FormQuestions",
+  }
+
+  useEffect(() => {
+    const tableSelected = tableMap[section] ?? null;
+    if(tableSelected) setTablePage(tableSelected);
+  }, [section]);
+  
   return (
     <FlexLayout navigationType="Accordion">
       <Flex justifyContent="space-between" alignItems="flex-start" w="100%" mb="1rem">
@@ -64,26 +85,33 @@ export default function Graphics() {
           )}
         </Flex>
 
-        <Flex flexDirection="column" gap="0.5rem" mt="0.75rem">
-          <SectionMenu
-            onSelect={handleUnifiedSelection}
-            selected={selectedQuestionId || section}
-            extractionQuestions={extractionQuestions.filter(q => q.questionId !== null)}
-            robQuestions={robQuestions.filter(q => q.questionId !== null)}
-          />
-
-          {section && !(
-            section === "Studies Funnel" ||
-            section === "Form Questions" ||
-            section === "Protocol"
-          ) && (
-            <SelectMenu
-              options={currentAllowedTypes}
-              selected={type}
-              onSelect={setType}
-              placeholder={t("selectMenu.chooseLayout")}
+        <Flex gap="0.5rem" mt="0.75rem" alignItems={section === "Form Questions" ? "flex-start" : "flex-end"}>
+          {type === t("selectMenu.graphicsTypes.table") && (
+            <ColumnVisibilityMenu
+              columnsVisible={columnsVisible}
+              toggleColumnVisibility={toggleColumnVisibility}
             />
           )}
+          <Flex flexDirection="column" gap="0.5rem">
+            <SectionMenu
+              onSelect={handleUnifiedSelection}
+              selected={selectedQuestionId || section}
+              extractionQuestions={extractionQuestions.filter(q => q.questionId !== null)}
+              robQuestions={robQuestions.filter(q => q.questionId !== null)}
+            />
+            {section && !(
+              section === "Studies Funnel" ||
+              section === "Form Questions" ||
+              section === "Protocol"
+            ) && (
+              <SelectMenu
+                options={currentAllowedTypes}
+                selected={type}
+                onSelect={setType}
+                placeholder={t("selectMenu.chooseLayout")}
+              />
+            )}
+          </Flex>
         </Flex>
       </Flex>
 
@@ -96,6 +124,7 @@ export default function Graphics() {
               type={type}
               filters={filters}
               selectedQuestionId={selectedQuestionId}
+              columnsVisible={columnsVisible}
             />
           ) : (
             <Flex direction="column" align="center" justify="center" h="800px" textAlign="center">
