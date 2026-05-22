@@ -116,7 +116,7 @@ export default function AddResearcher({researchers, setResearchers}:any) {
                     </Flex>
                   ))
                 ) : (
-                  <Text color="gray.500" textAlign="center">No researchers found</Text>
+                  <Text color="gray.500" textAlign="center">{t("generalDefinition.input.researchers.noResearchersFound")}</Text>
                 )
             }
         </Box>

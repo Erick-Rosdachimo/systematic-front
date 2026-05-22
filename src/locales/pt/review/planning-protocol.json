@@ -21,6 +21,7 @@
             "researchers": {
                 "label": "Pesquisadores",
                 "placeholder": "Adicione um pesquisador",
+                "noResearchersFound": "Nenhum pesquisador encontrado",
                 "status": {
                     "pending": "Pendente",
                     "expired": "Expirado",

@@ -21,6 +21,7 @@
             "researchers": {
                 "label": "Researchers",
                 "placeholder": "Add a researcher",
+                "noResearchersFound": "No researchers found",
                 "status": {
                     "pending": "Pending",
                     "expired": "Expired",
