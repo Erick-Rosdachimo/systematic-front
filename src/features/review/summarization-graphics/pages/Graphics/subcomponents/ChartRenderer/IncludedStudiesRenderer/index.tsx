@@ -20,26 +20,59 @@ export default function IncludedStudiesRenderer({ filteredStudies, type, chartId
   const { t } = useTranslation("review/summarization-graphics");
   const includedStudies = filteredStudies.filter((s) => s.extractionStatus === "INCLUDED");
 
-
+  const isTable = type === "Table" || type === "Tabela";
+  const isBubble = type === "Bubble Chart" || type === "Gráfico de Bolhas";
 
   let content;
-  if (type === "Table" || type === "Tabela") content = <LayoutFactoryChart columnsVisible={columnsVisible} articles={includedStudies as ArticleInterface[]} isLoading={false} />;
-  else if (type === "Line Chart" || type === "Gráfico de Linhas") content = <IncludedStudiesLineChart filteredStudies={includedStudies} />;
-  else if (type === "Bubble Chart" || type === "Gráfico de Bolhas") {
+  
+  if (isTable) {
+    content = (
+      <Box w="100%">
+        <LayoutFactoryChart columnsVisible={columnsVisible} articles={includedStudies as ArticleInterface[]} isLoading={false} />
+      </Box>
+    );
+  } else if (type === "Line Chart" || type === "Gráfico de Linhas") {
+    content = (
+      <Box w="100%">
+        <IncludedStudiesLineChart filteredStudies={includedStudies} />
+      </Box>
+    );
+  } else if (isBubble) {
     const items: BubbleItem[] = includedStudies.flatMap(study => 
       study.searchSources.map(src => ({ x: Number(study.year), group: src, y: 1 }))
     );
-       const { series, yCategories } = useBubbleDataGeneric(items);
-       content = (
-   <BubbleChart
-     title="Search Sources Evolution"
-     series={series}            
-     yCategories={yCategories}  
-     yaxisText="Search Sources"
-   />
-    
-       );
-  } else content = <div>{t("typeNotSupported")}</div>;
+    const { series, yCategories } = useBubbleDataGeneric(items);
+    content = (
+      <BubbleChart
+        title="Search Sources Evolution"
+        series={series}            
+        yCategories={yCategories}  
+        yaxisText="Search Sources"
+      />
+    );
+  } else {
+    content = <div>{t("typeNotSupported")}</div>;
+  }
 
-  return <Box id={chartId}>{content}</Box>;
+  return (
+    <Box 
+      id={chartId}
+      w="100%"
+      minH="auto" 
+      display="flex"
+      justifyContent="center" 
+      alignItems={isTable ? "flex-start" : "center"}  
+      pt={isTable ? 4 : 10} 
+      pb={10}
+    >
+      <Box 
+        w="100%" 
+        maxW={isBubble ? "1600px" : "1200px"} 
+        display="flex" 
+        justifyContent="center"
+      > 
+        {content}
+      </Box>
+    </Box>
+  );
 }
