@@ -1,12 +1,32 @@
 import { useTranslation } from "react-i18next";
 import { ChevronDownIcon, EditIcon, DeleteIcon } from "@chakra-ui/icons";
-import { Avatar, Button, Flex, Icon, Menu, MenuButton, MenuItem, MenuList, Text } from "@chakra-ui/react";
-import { useState, useEffect } from "react";
+import { Avatar,
+  Button,
+  Flex,
+  Icon,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Text,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+} from "@chakra-ui/react";
+import { useState, useEffect, useRef } from "react";
 
 const AVAILABLE_ROLES = ["admin", "reviewer", "owner"] as const;
 
 export default function IncludedResearchers({researchers, setResearchers}:any) {
   const { t } = useTranslation("review/planning-protocol"); 
+
+  const [researcherToDelete, setResearcherToDelete] = useState<any>(null);
+  
+  const cancelRef = useRef<HTMLButtonElement>(null!);
+
   // Backend
   function filterSearch(search: string){
     return function (researcher:any){
@@ -75,14 +95,13 @@ export default function IncludedResearchers({researchers, setResearchers}:any) {
     setEditingRole("");
   }
 
-  const handleDelete = (id: string, name: string, email: string) => {
-    const confirmed = window.confirm(
-      `Are you sure you want to delete ${name} (${email})?`,
-    );
-    if (!confirmed) return;
+  const handleDelete = () => {
+    if (!researcherToDelete) return;
 
-    excludeResearcher(id);
-  };
+    excludeResearcher(researcherToDelete.id);
+
+    setResearcherToDelete(null);
+  }
 
   useEffect(() => {
     setListedResearchers([
@@ -149,7 +168,7 @@ export default function IncludedResearchers({researchers, setResearchers}:any) {
                     <Button
                       variant="ghost"
                       onClick={() =>
-                        handleDelete(researcher.id, researcher.name, researcher.email)
+                        setResearcherToDelete(researcher)
                       }
                     >
                       <Icon as={DeleteIcon} w="15px" h="15px"/>
@@ -177,7 +196,7 @@ export default function IncludedResearchers({researchers, setResearchers}:any) {
                 <Button
                   variant="ghost"
                   onClick={() =>
-                    handleDelete( researcher.id, researcher.name, researcher.email)
+                    setResearcherToDelete(researcher)
                   }
                 >
                   <Icon as={DeleteIcon} w="15px" h="15px"/>
@@ -187,6 +206,44 @@ export default function IncludedResearchers({researchers, setResearchers}:any) {
           </Flex>
         </Flex>
       ))}
+      <AlertDialog
+        isOpen={!!researcherToDelete}
+        leastDestructiveRef={cancelRef}
+        onClose={() => setResearcherToDelete(null)}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader color="#2E4B6C" fontSize="lg" fontWeight="bold">
+              Delete researcher
+            </AlertDialogHeader>
+
+            <AlertDialogBody color="#2E4B6C">
+              Are you sure you want to delete{" "}
+              <strong>
+                {researcherToDelete?.name}
+              </strong>
+              ?
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button
+                ref={cancelRef}
+                onClick={() => setResearcherToDelete(null)}
+              >
+                Cancel
+              </Button>
+
+              <Button
+                colorScheme="red"
+                onClick={handleDelete}
+                ml={3}
+              >
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </>
   );
 }
