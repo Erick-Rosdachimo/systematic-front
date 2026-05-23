@@ -32,6 +32,12 @@
                     "admin": "admin",
                     "reviewer": "reviewer",
                     "owner": "owner"
+                },
+                "confirm": {
+                    "title": "Delete researcher",
+                    "body": "Are you sure you want to delete",
+                    "cancel": "Cancel",
+                    "delete": "Delete"
                 }
             }
         },

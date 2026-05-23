@@ -32,6 +32,12 @@
                     "admin": "administrador",
                     "reviewer": "revisor",
                     "owner": "dono"
+                },
+                "confirm": {
+                    "title": "Remover pesquisador",
+                    "body": "Tem certeza que quer remover",
+                    "cancel": "Cancelar",
+                    "delete": "Remover"
                 }
             }
         },

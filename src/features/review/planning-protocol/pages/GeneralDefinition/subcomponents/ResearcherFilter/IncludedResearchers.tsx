@@ -214,11 +214,11 @@ export default function IncludedResearchers({researchers, setResearchers}:any) {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader color="#2E4B6C" fontSize="lg" fontWeight="bold">
-              Delete researcher
+              {t("generalDefinition.input.researchers.confirm.title")}
             </AlertDialogHeader>
 
             <AlertDialogBody color="#2E4B6C">
-              Are you sure you want to delete{" "}
+              {`${t("generalDefinition.input.researchers.confirm.body")} `}
               <strong>
                 {researcherToDelete?.name}
               </strong>
@@ -230,7 +230,7 @@ export default function IncludedResearchers({researchers, setResearchers}:any) {
                 ref={cancelRef}
                 onClick={() => setResearcherToDelete(null)}
               >
-                Cancel
+                {t("generalDefinition.input.researchers.confirm.cancel")}
               </Button>
 
               <Button
@@ -238,7 +238,7 @@ export default function IncludedResearchers({researchers, setResearchers}:any) {
                 onClick={handleDelete}
                 ml={3}
               >
-                Delete
+                {t("generalDefinition.input.researchers.confirm.delete")}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
