@@ -1,12 +1,32 @@
 import { useTranslation } from "react-i18next";
-import { ChevronDownIcon, DeleteIcon } from "@chakra-ui/icons";
-import { Avatar, Button, Flex, Icon, Menu, MenuButton, MenuItem, MenuList, Text } from "@chakra-ui/react";
-import { useState, useEffect } from "react";
+import { ChevronDownIcon, EditIcon, DeleteIcon } from "@chakra-ui/icons";
+import { Avatar,
+  Button,
+  Flex,
+  Icon,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Text,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+} from "@chakra-ui/react";
+import { useState, useEffect, useRef } from "react";
 
 const AVAILABLE_ROLES = ["admin", "reviewer", "owner"] as const;
 
 export default function IncludedResearchers({researchers, setResearchers}:any) {
   const { t } = useTranslation("review/planning-protocol"); 
+
+  const [researcherToDelete, setResearcherToDelete] = useState<any>(null);
+  
+  const cancelRef = useRef<HTMLButtonElement>(null!);
+
   // Backend
   function filterSearch(search: string){
     return function (researcher:any){
@@ -63,14 +83,25 @@ export default function IncludedResearchers({researchers, setResearchers}:any) {
     ...filterSearchAndStatus({ status: "included" }),
   ]);
 
-  const handleDelete = (id: string, name: string, email: string) => {
-    const confirmed = window.confirm(
-      `Are you sure you want to delete ${name} (${email})?`,
-    );
-    if (!confirmed) return;
+  const [editingResearcherId, setEditingResearcherId] = useState<string | null>(null);
+  const [editingRole, setEditingRole] = useState("");
 
-    excludeResearcher(id);
-  };
+  function handleSaveRole() {
+    if (!editingResearcherId || !editingRole) return;
+
+    changeRole(editingResearcherId, editingRole);
+
+    setEditingResearcherId(null);
+    setEditingRole("");
+  }
+
+  const handleDelete = () => {
+    if (!researcherToDelete) return;
+
+    excludeResearcher(researcherToDelete.id);
+
+    setResearcherToDelete(null);
+  }
 
   useEffect(() => {
     setListedResearchers([
@@ -82,53 +113,137 @@ export default function IncludedResearchers({researchers, setResearchers}:any) {
 
   return (
     <>
-    {listedResearchers.map((researcher:any) => (
-      <Flex align="center" gap={5} px ={4} py={2} borderWidth="1px" borderColor="gray.200" borderRadius="md">
-        <Avatar size="sm" name={researcher.name} bg="#2E4B6C" color="white" />
-        <Flex align="center" justify="space-between" flex="1">
-          <Text>{researcher.name} - {researcher.email}</Text>
-          <Flex align="center" gap={5}>
-            {(researcher.status === "pending" || researcher.status === "expired" || researcher.status === "excluding") && (
-              <Text color="gray.500">
-                {t(`generalDefinition.input.researchers.status.${researcher.status}`)}
-              </Text>
-            )}
-            {researcher.status == "included" && (
-              <Menu>
-                <MenuButton
-                  as={Button}
-                  variant="ghost"
-                  size="sm"
-                  rightIcon={<ChevronDownIcon />}
-                  fontWeight="normal"
-                >
-                  {`${t("generalDefinition.input.researchers.role.role")}: ${t(`generalDefinition.input.researchers.role.${researcher.role}`)}`}
-                </MenuButton>
-                <MenuList>
-                  {AVAILABLE_ROLES.map((role) => (
-                    <MenuItem
-                      key={role}
-                      isDisabled={role === researcher.role}
-                      onClick={() => changeRole(researcher.id, role)}
+      {listedResearchers.map((researcher:any) => (
+        <Flex key={researcher.id} align="center" gap={5} px={4} py={2} borderWidth="1px" borderColor="gray.200" borderRadius="md">
+          <Avatar size="sm" name={researcher.name} bg="#2E4B6C" color="white"/>
+          <Flex align="center" justify="space-between" flex="1">
+            <Text>{researcher.name} - {researcher.email}</Text>
+            <Flex alignItems="center" justifyContent="center" gap={5}>
+              {(researcher.status === "pending" || researcher.status === "expired" || researcher.status === "excluding") && (
+                <Text color="gray.500">
+                  {t(`generalDefinition.input.researchers.status.${researcher.status}`)}
+                </Text>
+              )}
+              {researcher.status === "included" ? (
+                <>
+                  {editingResearcherId === researcher.id ? (
+                    <Menu>
+                      <MenuButton
+                        as={Button}
+                        variant="ghost"
+                        size="sm"
+                        rightIcon={<ChevronDownIcon w={18} h={18}/>}
+                        fontWeight="normal"
+                        fontSize={16}
+                        h="100%"
+                        w="200px"
+                        p="0"
+                        textAlign="start"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        lineHeight="40px"
+                        borderInline="3px solid transparent"
+                        outline="1px solid black"
+                      >
+                        {`${t("generalDefinition.input.researchers.role.role")}: ${t(`generalDefinition.input.researchers.role.${editingRole}`)}`}
+                      </MenuButton>
+                      <MenuList>
+                        {AVAILABLE_ROLES.map((role) => (
+                          <MenuItem
+                            key={role}
+                            onClick={() => setEditingRole(role)}
+                          >
+                            {t(`generalDefinition.input.researchers.role.${role}`)}
+                          </MenuItem>
+                        ))}
+                      </MenuList>
+                    </Menu>
+                  ) : (
+                    <Text w="200px" h="100%" borderInline="3px solid transparent" p={0} display="flex" alignItems="center" lineHeight="20px">
+                      {`${t("generalDefinition.input.researchers.role.role")}: ${t(`generalDefinition.input.researchers.role.${researcher.role}`)}`}
+                    </Text>
+                  )}
+                  <Flex>
+                    <Button
+                      variant="ghost"
+                      onClick={() =>
+                        setResearcherToDelete(researcher)
+                      }
                     >
-                      {t(`generalDefinition.input.researchers.role.${role}`)}
-                    </MenuItem>
-                  ))}
-                </MenuList>
-              </Menu>
-            )}
-            <Button
-              variant="ghost"
-              onClick={() =>
-                handleDelete(researcher.id, researcher.name, researcher.email)
-              }
-            >
-              <Icon as={DeleteIcon} w={"15px"} h={"15px"} />
-            </Button>
-          </Flex> 
+                      <Icon as={DeleteIcon} w="15px" h="15px"/>
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      onClick={() => {
+                        if(editingResearcherId === researcher.id) {
+                          handleSaveRole();
+                        } else {
+                          setEditingResearcherId(researcher.id);
+                          setEditingRole(researcher.role);
+                        }
+                      }}
+                    >
+                      {editingResearcherId === researcher.id ? (
+                        <i className="pi pi-save" style={{ color: "black", width: "15px", height: "15px" }}></i>
+                      ) : (
+                        <Icon as={EditIcon} w="15px" h="15px"/>
+                      )}
+                    </Button>
+                  </Flex>
+                </>
+              ) : (
+                <Button
+                  variant="ghost"
+                  onClick={() =>
+                    setResearcherToDelete(researcher)
+                  }
+                >
+                  <Icon as={DeleteIcon} w="15px" h="15px"/>
+                </Button>
+              )}
+            </Flex>
+          </Flex>
         </Flex>
-      </Flex>
-    ))}
+      ))}
+      <AlertDialog
+        isOpen={!!researcherToDelete}
+        leastDestructiveRef={cancelRef}
+        onClose={() => setResearcherToDelete(null)}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader color="#2E4B6C" fontSize="lg" fontWeight="bold">
+              {t("generalDefinition.input.researchers.confirm.title")}
+            </AlertDialogHeader>
+
+            <AlertDialogBody color="#2E4B6C">
+              {`${t("generalDefinition.input.researchers.confirm.body")} `}
+              <strong>
+                {researcherToDelete?.name}
+              </strong>
+              ?
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button
+                ref={cancelRef}
+                onClick={() => setResearcherToDelete(null)}
+              >
+                {t("generalDefinition.input.researchers.confirm.cancel")}
+              </Button>
+
+              <Button
+                colorScheme="red"
+                onClick={handleDelete}
+                ml={3}
+              >
+                {t("generalDefinition.input.researchers.confirm.delete")}
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </>
   );
 }
