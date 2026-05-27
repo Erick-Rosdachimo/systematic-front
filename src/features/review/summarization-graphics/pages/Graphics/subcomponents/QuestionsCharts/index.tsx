@@ -5,6 +5,9 @@ import { QuestionsTable } from "../../../../components/tables/QuestionsTable";
 import useFetchQuestionAnswers from "../../../../services/useFetchQuestionAnwers";
 import ArticleInterface from "@features/review/shared/types/ArticleInterface";
 import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
+import useBubbleDataGeneric, { BubbleItem } from "@features/review/summarization-graphics/hooks/useBubbleDataGeneric";
+import BubbleChart from "@features/review/summarization-graphics/components/charts/BubbleChart";
+//import BubbleChart from "@features/review/summarization-graphics/components/charts/BubbleChart";
 
 type Props = {
   selectedQuestionId?: string;
@@ -144,6 +147,49 @@ export const QuestionsCharts = ({
               labels={labels}
               data={data}
               section="questions"
+            />
+          );
+        } else if (type === "Bubble Chart" || type === "Gráfico de Bolhas") {
+          const yearAnswerMap = new Map<string, number>();
+
+          filteredEntries.forEach(([answer, ids]) => {
+            ids.forEach((id) => {
+              const study = filteredStudies.find(
+                (s) => s.studyReviewId === id
+              );
+
+              if (!study) return;
+
+              const year = Number(study.year);
+
+              const key = `${year}-${answer}`;
+
+              yearAnswerMap.set(
+                key,
+                (yearAnswerMap.get(key) || 0) + 1
+              );
+            });
+          });
+
+          const items: BubbleItem[] = Array.from(
+            yearAnswerMap.entries()
+          ).map(([key, count]) => {
+            const [year, answer] = key.split("-");
+
+            return {
+              x: Number(year),
+              group: answer,
+              y: count,
+            };
+          });
+      
+          const { series, yCategories } = useBubbleDataGeneric(items);
+          chartContent = (
+            <BubbleChart
+              title=""
+              series={series}
+              yCategories={yCategories}
+              yaxisText="abc"
             />
           );
         } else {
