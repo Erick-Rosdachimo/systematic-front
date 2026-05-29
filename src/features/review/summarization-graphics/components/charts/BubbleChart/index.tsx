@@ -103,7 +103,7 @@ export default function BubbleChart({ title, series, yCategories, yaxisText }: P
         style: { fontWeight: 'bold', fontSize: '16px', color: '#4A5568' } 
       },
       labels: {
-        minWidth: 120,
+        maxWidth: 80,
         formatter: (val) => {
           const i = Math.round(val);
           if (Math.abs(val - i) > 0.1) return "";
