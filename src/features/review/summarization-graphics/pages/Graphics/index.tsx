@@ -85,7 +85,7 @@ export default function Graphics() {
           )}
         </Flex>
 
-        <Flex gap="0.5rem" mt="0.75rem" alignItems={section === "Form Questions" ? "flex-start" : "flex-end"}>
+        <Flex gap="0.5rem" mt="0.75rem" alignItems="flex-end">
           {type === t("selectMenu.graphicsTypes.table") && (
             <ColumnVisibilityMenu
               columnsVisible={columnsVisible}
@@ -101,8 +101,8 @@ export default function Graphics() {
             />
             {section && !(
               section === "Studies Funnel" ||
-              section === "Form Questions" ||
-              section === "Protocol"
+              section === "Protocol" ||
+              currentAllowedTypes.length == 1
             ) && (
               <SelectMenu
                 options={currentAllowedTypes}

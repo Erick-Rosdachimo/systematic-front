@@ -29,10 +29,10 @@ export const QuestionsTable = ({ data, columnsVisible }: QuestionsTableProps) =>
     }));
 
   const columns: ColumnDef<QuestionRow>[] = [
-    { key: "answer", label: t("questionsTable.answer"), width: "30%", sortable: true },
-    { key: "studies", label: t("questionsTable.studies"), width: "40%", sortable: true, isNumeric: true, render: (row) => row.studies },
-    { key: "total", label: t("questionsTable.total"), width: "15%", isNumeric: true, sortable: true },
-    { key: "percentage", label: t("questionsTable.percentage"), width: "15%", isNumeric: true, sortable: true, render: (row) => row.percentage.toFixed(2) + "%" },
+    { key: "answer", label: t("questionsTable.answer"), width: "65%", sortable: true },
+    { key: "studies", label: t("questionsTable.studies"), width: "15%", sortable: true, isNumeric: true, render: (row) => row.studies },
+    { key: "total", label: t("questionsTable.total"), width: "10%", isNumeric: true, sortable: true },
+    { key: "percentage", label: t("questionsTable.percentage"), width: "20%", isNumeric: true, sortable: true, render: (row) => row.percentage.toFixed(2) + "%" },
   ];
 
   const visibleColumns = columns.filter((column) => {

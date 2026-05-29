@@ -22,8 +22,7 @@ export default function FormQuestionsRenderer({
   return (
     <Box 
       id={chartId}
-      mx="-2rem !important" 
-      w="calc(100% + 4rem) !important" 
+      w="100%"
       display="block" 
       pt={4} 
       pb={10}

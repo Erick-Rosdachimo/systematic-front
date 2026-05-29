@@ -31,6 +31,15 @@ export default function BubbleChart({ title, series, yCategories, yaxisText }: P
   const minBubbleRadius = Math.max(8, Math.floor(maxBubbleRadius * 0.4));
   const labelFontSize = maxBubbleRadius >= 18 ? "11px" : "9px";
 
+  yCategories = yCategories.map(
+    item => item.match(/name:\s*(.*),\s*value:/)?.[1] ?? item
+  );
+
+  series = series.map((serie) => ({
+    ...serie,
+    name: serie.name.match(/name:\s*(.*),\s*value:/)?.[1] ?? serie.name,
+  }));
+
   const options: ApexOptions = {
     chart: {
       toolbar: {
@@ -94,7 +103,7 @@ export default function BubbleChart({ title, series, yCategories, yaxisText }: P
         style: { fontWeight: 'bold', fontSize: '16px', color: '#4A5568' } 
       },
       labels: {
-        minWidth: 120,
+        maxWidth: 80,
         formatter: (val) => {
           const i = Math.round(val);
           if (Math.abs(val - i) > 0.1) return "";
