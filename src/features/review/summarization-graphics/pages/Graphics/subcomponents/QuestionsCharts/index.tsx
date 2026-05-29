@@ -115,7 +115,6 @@ export const QuestionsCharts = ({
     <>
       {filteredAnswers.map((q) => {
         const question = q.question;
-        const code = question.code;
         const description = question.description;
 
         const filteredEntries = Object.entries(q.answer ?? {}).map(
@@ -143,7 +142,7 @@ export const QuestionsCharts = ({
         } else if (type === "Bar Chart" || type === "Gráfico de Barras") {
           chartContent = (
             <BarChart
-              title={`Question ${code}`}
+              title=""
               labels={labels}
               data={data}
               section="questions"
