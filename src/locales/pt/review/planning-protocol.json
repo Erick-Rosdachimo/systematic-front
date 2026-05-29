@@ -20,7 +20,25 @@
             },
             "researchers": {
                 "label": "Pesquisadores",
-                "placeholder": "Insira o nome dos pesquisadores "
+                "placeholder": "Adicione um pesquisador",
+                "noResearchersFound": "Nenhum pesquisador encontrado",
+                "status": {
+                    "pending": "Pendente",
+                    "expired": "Expirado",
+                    "excluding": "Excluído"
+                },
+                "role": {
+                    "role": "Função",
+                    "admin": "administrador",
+                    "reviewer": "revisor",
+                    "owner": "dono"
+                },
+                "confirm": {
+                    "title": "Remover pesquisador",
+                    "body": "Tem certeza que quer remover",
+                    "cancel": "Cancelar",
+                    "delete": "Remover"
+                }
             }
         },
         "alert": {
@@ -156,7 +174,30 @@
                 "label": "Questões de Extração",
                 "question": "QUESTÃO",
                 "type": "TIPO",
-                "noDataFound": "Dados não encontrados"
+                "noDataFound": "Dados não encontrados",
+                "questionType": {
+                    "textual": "textual",
+                    "pickList": "seleção única",
+                    "numberedScale": "escala numérica",
+                    "labeledList": "lista rotulada",
+                    "pickMany": "seleção múltipla"
+                },
+                "toaster": {
+                    "referenceCode": {
+                        "title": "Um código de referência é obrigatório.",
+                        "description": "Por favor, preencha o campo de código de referência antes de salvar."
+                    },
+                    "duplicated": {
+                        "title1": "O código de referência",
+                        "title2": "já está sendo usado.",
+                        "description": "Por favor, escolha outro."
+                    },
+                    "finishEditing": "Termine de editar a linha atual antes de adicionar uma nova.",
+                    "questionType": {
+                        "title": "Tipo de questão é obrigatório.",
+                        "description": "Por favor, preencha o campo de tipo de questão antes de salvar."
+                    }
+                }
             }
         }
     },

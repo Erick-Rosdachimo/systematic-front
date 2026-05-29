@@ -8,14 +8,14 @@ import {
   MenuGroup,
   MenuItem,
   MenuList,
-  Tooltip,
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 
 type MenuProps = {
   onSelect: (section: string) => void;
   selected: string;
-  questions?: any[];
+  extractionQuestions?: any[];
+  robQuestions?: any[];
 };
 
 type Section = {
@@ -23,20 +23,13 @@ type Section = {
   value: string;
   group?: string;
   displayName?: string;
-  tooltip?: string;
-};
-
-const getQuestionTooltip = (code: string): string => {
-  const num = code.replace(/[^0-9]/g, "");
-  if (code.startsWith("EQ")) return `Extraction Question ${num}`;
-  if (code.startsWith("RBQ")) return `Risk of Bias Question ${num}`;
-  return code;
 };
 
 export default function SectionMenu({
   onSelect,
   selected,
-  questions = [],
+  extractionQuestions = [],
+  robQuestions = [],
 }: MenuProps) {
   const { t } = useTranslation("review/summarization-graphics");
 
@@ -84,12 +77,17 @@ export default function SectionMenu({
 
   const allSections: Section[] = [
     ...staticSections,
-    ...questions.map((q) => ({
+    ...extractionQuestions.map((q) => ({
       label: q.code,
       value: q.questionId,
-      group: "Form Questions",
-      displayName: q.code,
-      tooltip: getQuestionTooltip(q.code),
+      group: "Extraction Questions",
+      displayName: `${t("sectionMenu.groups.extraction_questions")} - ${q.code}`,
+    })),
+    ...robQuestions.map((q) => ({
+      label: q.code,
+      value: q.questionId,
+      group: "Risk of Bias Questions",
+      displayName: `${t("sectionMenu.groups.risk_of_bias_questions")} - ${q.code}`,
     })),
   ];
 
@@ -137,7 +135,7 @@ export default function SectionMenu({
           <Box key={groupName}>
             <MenuGroup
               title={t(
-                `sectionMenu.groups.${groupName.toLowerCase().replace(" ", "_")}`,
+                `sectionMenu.groups.${groupName.toLowerCase().replace(/ /g, "_")}`,
                 groupName,
               )}
               bg="#EBF0F3"
@@ -145,27 +143,17 @@ export default function SectionMenu({
               fontSize="md"
               fontWeight="bold"
             />
+
             {items.map((item) => (
-              <Tooltip
+              <MenuItem
                 key={item.value}
-                label={item.tooltip || ""}
-                placement="left"
-                hasArrow
-                isDisabled={!item.tooltip}
-                bg="#2E4B6C"
-                color="white"
-                borderRadius="md"
-                fontSize="sm"
+                onClick={() => onSelect(item.value)}
+                ml="1"
+                bg={selected === item.value ? "blue.100" : "transparent"}
+                _hover={{ bg: "blue.200" }}
               >
-                <MenuItem
-                  onClick={() => onSelect(item.value)}
-                  ml="1"
-                  bg={selected === item.value ? "blue.100" : "transparent"}
-                  _hover={{ bg: "blue.200" }}
-                >
-                  {item.label}
-                </MenuItem>
-              </Tooltip>
+                {item.label}
+              </MenuItem>
             ))}
           </Box>
         ))}

@@ -19,12 +19,14 @@ import { buildQuestionsCsv } from "@features/review/summarization-graphics/compo
 import ArticleInterface from "@features/review/shared/types/ArticleInterface";
 import { useFetchStudiesByStage } from "@features/review/summarization-graphics/services/useFetchStudiesByStage";
 import useFetchStudiesByCriteria from "@features/review/summarization-graphics/services/useFetchStudiesByCriteria";
+import { ColumnVisibility } from "@features/review/shared/hooks/useVisibilityColumns";
 
 type Props = {
   section: string;
   type: string;
   filters: FiltersState;
   selectedQuestionId?: string;
+  columnsVisible: ColumnVisibility
 };
 export type CsvRow = Record<string, string | number>;
 
@@ -33,6 +35,7 @@ export default function ChartsRenderer({
   type,
   filters,
   selectedQuestionId,
+  columnsVisible
 }: Props) {
   const { articles, isLoading } = useGetAllReviewArticles();
   const [, setCsvData] = useState<CsvRow[]>([]);
@@ -103,10 +106,10 @@ export default function ChartsRenderer({
   // Map de renderers
   const rendererMap: Record<string, any> = {
     "Search Sources": (props: any) => (
-      <SearchSourcesRenderer {...props} chartId={chartId} />
+      <SearchSourcesRenderer {...props} columnsVisible={columnsVisible} chartId={chartId} />
     ),
     "Included Studies": (props: any) => (
-      <IncludedStudiesRenderer {...props} chartId={chartId} />
+      <IncludedStudiesRenderer {...props} columnsVisible={columnsVisible} chartId={chartId} />
     ),
     "S1_Inclusion Criteria": (props: any) => (
       <CriteriaRenderer
@@ -145,6 +148,7 @@ export default function ChartsRenderer({
         {...props}
         chartId={chartId}
         selectedQuestionId={selectedQuestionId}
+        columnsVisible={columnsVisible}
       />
     ),
     "Studies Funnel": () => <StudiesFunnelRenderer chartId={chartId} />,

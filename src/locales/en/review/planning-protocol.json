@@ -20,7 +20,25 @@
             },
             "researchers": {
                 "label": "Researchers",
-                "placeholder": "Enter the name of the researchers "
+                "placeholder": "Add a researcher",
+                "noResearchersFound": "No researchers found",
+                "status": {
+                    "pending": "Pending",
+                    "expired": "Expired",
+                    "excluding": "Excluding"               
+                },
+                "role": {
+                    "role": "Role",
+                    "admin": "admin",
+                    "reviewer": "reviewer",
+                    "owner": "owner"
+                },
+                "confirm": {
+                    "title": "Delete researcher",
+                    "body": "Are you sure you want to delete",
+                    "cancel": "Cancel",
+                    "delete": "Delete"
+                }
             }
         },
         "alert": {
@@ -156,7 +174,30 @@
                 "label": "Extraction Questions",
                 "question": "QUESTION",
                 "type": "TYPE",
-                "noDataFound": "No data found"
+                "noDataFound": "No data found",
+                "questionType": {
+                    "textual": "textual",
+                    "pickList": "pick list",
+                    "numberedScale": "number scale", 
+                    "labeledList": "labeled list",
+                    "pickMany": "pick many"
+                },
+                "toaster": {
+                    "referenceCode": {
+                        "title": "A reference code is required.",
+                        "description": "Please fill in the Code field before saving."
+                    },
+                    "duplicated": {
+                        "title1": "The reference code",
+                        "title2": "is already in use.",
+                        "description": "Please choose another one."
+                    },
+                    "finishEditing": "Finish editing the current row before adding a new one.",
+                    "questionType": {
+                        "title": "Question type is required.",
+                        "description": "Please fill in the question type field before saving."
+                    }
+                }
             }
         }
     },

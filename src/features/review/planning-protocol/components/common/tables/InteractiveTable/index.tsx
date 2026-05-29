@@ -1,5 +1,8 @@
+// External library
 import { useEffect, useState } from "react";
 import { Input, Select, FormLabel, Textarea } from "@chakra-ui/react";
+import { mutate } from "swr";
+import { useTranslation } from "react-i18next";
 import Axios from "../../../../../../../infrastructure/http/axiosClient";
 import EventButton from "@components/common/buttons/EventButton";
 
@@ -17,7 +20,6 @@ import PickManyModal from "../../modals/PickManyModal";
 import LabeledScaleModal from "../../modals/LabeledScaleModal";
 import useValidatorSQLInjection from "@features/shared/hooks/useValidatorSQLInjection";
 import useToaster from "@components/feedback/Toaster";
-import { useTranslation } from "react-i18next";
 
 interface Props {
   id: string;
@@ -29,6 +31,8 @@ export default function InteractiveTable({ id, url, label }: Props) {
   let adress = "";
   if (label == "Extraction Questions" || label == "Questões de Extração") adress = "extraction-question";
   if (label == "Risk of Bias Questions" || label == "Questões sobre Risco de Viés") adress = "rob-question";
+
+  const protocolKey = `systematic-study/${id}/protocol/${adress}`;
 
   const toaster = useToaster();
   const validator = useValidatorSQLInjection();
@@ -103,20 +107,20 @@ export default function InteractiveTable({ id, url, label }: Props) {
             let questions;
             switch (item.questionType) {
               case "TEXTUAL":
-                type = "textual";
+                type = t("selectionAndExtraction.input.extractionQuestions.questionType.textual");
                 break;
               case "PICK_LIST":
-                type = "pick list";
+                type = t("selectionAndExtraction.input.extractionQuestions.questionType.pickList");
                 questions = item.options;
                 break;
               case "NUMBERED_SCALE":
-                type = "number scale";
+                type = t("selectionAndExtraction.input.extractionQuestions.questionType.numberedScale");
                 break;
               case "LABELED_SCALE":
-                type = "labeled list";
+                type = t("selectionAndExtraction.input.extractionQuestions.questionType.labeledList");
                 break;
               case "PICK_MANY":
-                type = "pick many";
+                type = t("selectionAndExtraction.input.extractionQuestions.questionType.pickMany");
                 questions = item.options;
                 break;
             }
@@ -142,11 +146,22 @@ export default function InteractiveTable({ id, url, label }: Props) {
   }, [id, url, adress, setRows]);
 
   function handleSelect(index: number, newValue: string) {
+    if (!newValue || newValue.trim() === "") return;
+
     handleTypeChange(index, newValue);
-    if (newValue !== "") {
-      setModalType(newValue);
-      setShowModal(true);
-    }
+    setModalType(newValue);
+    setShowModal(true);
+  }
+
+  async function revalidateFormulary() {
+    await mutate(protocolKey);
+
+    await mutate(
+      (key: string) =>
+        typeof key === "string" &&
+        key.includes(`systematic-study/${id}/report/`) &&
+        key.includes("/included-studies-answers"),
+    );
   }
 
   async function handleSaveEdit(index: number, closeEditMode: boolean = true) {
@@ -154,8 +169,8 @@ export default function InteractiveTable({ id, url, label }: Props) {
 
     if (String(rows[index].id).trim() === "") {
       toaster({
-        title: "A reference code is required.",
-        description: "Please fill in the Code field before saving.",
+        title: t("selectionAndExtraction.input.extractionQuestions.toaster.referenceCode.title"),
+        description: t("selectionAndExtraction.input.extractionQuestions.toaster.referenceCode.description"),
         status: "warning",
       });
       return;
@@ -168,14 +183,27 @@ export default function InteractiveTable({ id, url, label }: Props) {
 
     if (currentCode !== "" && isDuplicate) {
       toaster({
-        title: `The reference code '${currentCode}' is already in use.`,
-        description: "Please choose another one.",
+        title: t("selectionAndExtraction.input.extractionQuestions.toaster.duplicated.title1") + ` ${currentCode} ` + t("selectionAndExtraction.input.extractionQuestions.toaster.duplicated.title2"),
+        description: t("selectionAndExtraction.input.extractionQuestions.toaster.duplicated.description"),
         status: "error",
       });
       return;
     }
 
     const row = rows[index];
+    if (!row.type || row.type.trim() === "") {
+      toaster({
+        title: t(
+          "selectionAndExtraction.input.extractionQuestions.toaster.questionType.title",
+        ),
+        description: t(
+          "selectionAndExtraction.input.extractionQuestions.toaster.questionType.description",
+        ),
+        status: "warning",
+      });
+      return;
+    }
+    
     const { question, id: code, type, isNew, questionId: serverId } = row;
     const questionId = code;
     const reviewId = id;
@@ -185,30 +213,30 @@ export default function InteractiveTable({ id, url, label }: Props) {
     let newQuestionId: string | null = null;
 
     try {
-      if (type === "textual") {
+      if (type === t("selectionAndExtraction.input.extractionQuestions.questionType.textual")) {
         questionType = "TEXTUAL";
         data = { question, questionId, reviewId };
         if (isNew) newQuestionId = await sendTextualQuestion(data);
         else await updateTextualQuestion(data, serverId, questionType);
-      } else if (type === "pick list") {
+      } else if (type === t("selectionAndExtraction.input.extractionQuestions.questionType.pickList")) {
         questionType = "PICK_LIST";
         data = { question, questionId, reviewId, options: questions };
         handleAddQuestions(index, questions);
         if (isNew) newQuestionId = await sendPickListQuestion(data);
         else await updatePickListQuestion(data, serverId, questionType);
-      } else if (type === "number scale") {
+      } else if (type === t("selectionAndExtraction.input.extractionQuestions.questionType.numberedScale")) {
         questionType = "NUMBERED_SCALE";
         data = { question, questionId, reviewId, lower: numberScale[0], higher: numberScale[1] };
         handleNumberScale(index, numberScale[0], numberScale[1]);
         if (isNew) newQuestionId = await sendNumberScaleQuestion(data);
         else await updateNumberScaleQuestion(data, serverId);
-      } else if (type === "labeled list") {
+      } else if (type === t("selectionAndExtraction.input.extractionQuestions.questionType.labeledList")) {
         questionType = "LABELED_SCALE";
         data = { question, questionId, reviewId, scales: labeledQuestions };
         handleLabeledList(index, labeledQuestions);
         if (isNew) newQuestionId = await sendLabeledListQuestion(data);
         else await updateLabeledListQuestion(data, serverId);
-      } else if (type === "pick many") {
+      } else if (type === t("selectionAndExtraction.input.extractionQuestions.questionType.pickMany")) {
         questionType = "PICK_MANY";
         data = { question, questionId, reviewId, options: pickManyQuestions };
         handlePickMany(index, pickManyQuestions);
@@ -220,9 +248,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
         handleServerSend(index, newQuestionId);
       }
 
-      const accessToken = localStorage.getItem("accessToken");
-      let optionsReq = { headers: { Authorization: `Bearer ${accessToken}` } };
-      await Axios.get(`systematic-study/${id}/protocol/extraction-question`, optionsReq);
+      await revalidateFormulary();
 
       if (closeEditMode) {
         setEditIndex(null);
@@ -253,6 +279,8 @@ export default function InteractiveTable({ id, url, label }: Props) {
       await deleteQuestion(data as any, serverId);
       handleDelete(index);
 
+      await revalidateFormulary();
+
       if (pendingNewIndex === index) {
         setPendingNewIndex(null);
         setEditIndex(null);
@@ -280,7 +308,7 @@ export default function InteractiveTable({ id, url, label }: Props) {
   function addNewRow() {
     if (editIndex !== null) {
       toaster({
-        title: "Finish editing the current row before adding a new one.",
+        title: t("selectionAndExtraction.input.extractionQuestions.toaster.finishEditing"),
         status: "warning",
       });
       return;
@@ -363,20 +391,25 @@ export default function InteractiveTable({ id, url, label }: Props) {
         return (
           <Select
             onChange={(e) => handleSelect(index, e.target.value)}
-            value={row.type}
+            placeholder={!row.type ? "Select type" : undefined}
+            value={row.type || ""}
             isDisabled={!isEditing}
             border={isEditing ? "solid 1px #303D50" : "transparent"}
             bg={isEditing ? "white" : "transparent"}
             color="black"
+            iconColor={isEditing ? "#303D50" : "transparent"}
+            cursor={isEditing ? "pointer" : "default"}
             _disabled={{ opacity: 1, cursor: "default" }}
             borderRadius="md"
             size="sm"
           >
-            {options.map((opt, i) => (
-              <option key={i} value={opt.toLowerCase()}>
-                {opt}
-              </option>
-            ))}
+            {options
+              .filter((opt) => opt && opt.trim() !== "")
+              .map((opt, i) => (
+                <option key={i} value={opt.toLowerCase()}>
+                  {opt.charAt(0).toUpperCase() + opt.slice(1)}
+                </option>
+              ))}
           </Select>
         );
       },
@@ -450,47 +483,39 @@ export default function InteractiveTable({ id, url, label }: Props) {
         />
       </div>
 
-      {showModal && modalType === "pick list" && (
+      {showModal && modalType === t("selectionAndExtraction.input.extractionQuestions.questionType.pickList") && (
         <PickListModal
           show={setShowModal}
           questionHolder={setQuestions}
           questions={questions}
-          onSave={() => {
-            if (editIndex !== null) handleSaveEdit(editIndex, false);
-          }}
+          onSave={() => {}}
         />
       )}
 
-      {showModal && modalType === "number scale" && (
+      {showModal && modalType === t("selectionAndExtraction.input.extractionQuestions.questionType.numberedScale") && (
         <NumberScaleModal
           show={setShowModal}
           scaleHolder={setnumberScale}
           values={numberScale}
-          onSave={() => {
-            if (editIndex !== null) handleSaveEdit(editIndex, false);
-          }}
+          onSave={() => {}}
         />
       )}
 
-      {showModal && modalType === "labeled list" && (
+      {showModal && modalType === t("selectionAndExtraction.input.extractionQuestions.questionType.labeledList") && (
         <LabeledScaleModal
           show={setShowModal}
           questionHolder={setLabeledQuestions}
           questions={labeledQuestions}
-          onSave={() => {
-            if (editIndex !== null) handleSaveEdit(editIndex, false);
-          }}
+          onSave={() => {}}
         />
       )}
 
-      {showModal && modalType === "pick many" && (
+      {showModal && modalType === t("selectionAndExtraction.input.extractionQuestions.questionType.pickMany") && (
         <PickManyModal
           show={setShowModal}
           optionHolder={setPickManyQuestions}
           options={pickManyQuestions}
-          onSave={() => {
-            if (editIndex !== null) handleSaveEdit(editIndex, false);
-          }}
+          onSave={() => {}}
         />
       )}
     </div>

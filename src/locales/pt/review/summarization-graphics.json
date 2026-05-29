@@ -23,7 +23,8 @@
             "overview": "Visão Geral",
             "first_selection": "Primeira Seleção",
             "second_selection": "Segunda Seleção",
-            "form_questions": "Perguntas do Formulário"
+            "extraction_questions": "Questões de Extração",
+            "risk_of_bias_questions": "Questões de Risco de Viés"
         },
         "tooltips": {
             "inclusion": "Critério de Inclusão",
@@ -58,7 +59,7 @@
     },
     "questionsTable": {
         "answer": "Resposta",
-        "studies": "Estudos",
+        "studies": "ID do Estudo",
         "total": "Total",
         "percentage": "Percentual do Total"
     }

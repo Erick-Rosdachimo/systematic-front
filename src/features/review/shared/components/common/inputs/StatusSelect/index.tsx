@@ -89,9 +89,8 @@ export default function StatusSelect({
   const selectedOption = options.find((o) => o.value === selectedValue);
   let buttonLabel = t("statusSelect.placeholder");
   if (selectedOption) {
-    buttonLabel = getLabel(selectedOption.label, selectedOption.value);
+    buttonLabel = `${t("statusSelect.placeholder")} - ${getLabel(selectedOption.label, selectedOption.value)}`;
   }
-
   useEffect(() => {
     const update = () => setMenuWidth(btnRef.current?.offsetWidth ?? 0);
     update();
@@ -112,7 +111,10 @@ export default function StatusSelect({
           textAlign="left"
           fontWeight="normal"
         >
-          {buttonLabel}
+          <HStack spacing={2}>
+            {selectedValue && getIcon(selectedValue)}
+            <Text fontWeight="medium">{buttonLabel}</Text>
+          </HStack>
         </MenuButton>
         <Portal>
           <MenuList

@@ -1,6 +1,7 @@
 // External library
 import { useEffect, useState } from "react";
 import { FormControl, FormLabel } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
 
 // Components
 import SelectInput from "@components/common/inputs/SelectInput";
@@ -28,7 +29,8 @@ export default function LabeledList({
   onResponse,
 }: LabeledListProps) {
   const [selected, setSelected] = useState("");
-
+  const { t } = useTranslation("review/execution-extraction");
+  
   const options = Object.entries(scales).map(
     ([key, value]) => `${key}: ${value}`,
   );
@@ -46,7 +48,6 @@ export default function LabeledList({
       setSelected(answer);
       return;
     }
-
     const formattedAnswer = `${answer.name}: ${answer.value}`;
     setSelected(formattedAnswer);
   }, [answer]);
@@ -60,7 +61,7 @@ export default function LabeledList({
         onSelect={handleSelectChange}
         selectedValue={selected}
         page="extraction"
-        placeholder="Labels"
+        placeholder={t("extractionForm.labeledList")}
         isInvalid={isInvalid}
       />
     </FormControl>

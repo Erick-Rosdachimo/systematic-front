@@ -23,7 +23,8 @@
         "overview": "Overview",
         "first_selection": "First Selection",
         "second_selection": "Second Selection",
-        "form_questions": "Form Questions"
+        "extraction_questions": "Extraction Questions",
+        "risk_of_bias_questions": "Risk of Bias Questions"
       }
     },
     "selectMenu": {
@@ -53,7 +54,7 @@
     },
     "questionsTable": {
         "answer": "Answer",
-        "studies": "Studies",
+        "studies": "Study ID",
         "total": "Total",
         "percentage": "Percentage of Total"
     }

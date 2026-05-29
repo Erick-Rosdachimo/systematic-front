@@ -79,7 +79,7 @@ export default function ButtonsForSelection({
     criterias: fetchedCriterias,
     handlerUpdateCriteriasStructure,
     resetLocalCriterias,
-  } = useFetchAllCriteriasByArticle({ page });
+  } = useFetchAllCriteriasByArticle({ page, reloadArticles });
 
   const [historicalCriteria, setHistoricalCriteria] = useState<string[]>([]);
 
@@ -122,6 +122,7 @@ export default function ButtonsForSelection({
 
   const isInclusionActive = criteriaOptions.INCLUSION.isActive;
   const isExclusionActive = criteriaOptions.EXCLUSION.isActive;
+  const isDuplicated = currentArticle.extractionStatus === "DUPLICATED" || currentArticle.selectionStatus === "DUPLICATED";
   const isUniqueArticle = articles.length === 1;
 
   async function goToNextArticle() {
@@ -176,13 +177,13 @@ export default function ButtonsForSelection({
     INCLUSION: {
       label: "Include",
       description: "Add inclusion criteria",
-      isDisabled: criteriaGroupDataMap["INCLUSION"].data.length === 0 || isExclusionActive,
+      isDisabled: criteriaGroupDataMap["INCLUSION"].data.length === 0 || isExclusionActive || isDuplicated,
       options: criteriaGroupDataMap["INCLUSION"].data,
     },
     EXCLUSION: {
       label: "Exclude",
       description: "Add exclusion criteria",
-      isDisabled: criteriaGroupDataMap["EXCLUSION"].data.length === 0 || isInclusionActive,
+      isDisabled: criteriaGroupDataMap["EXCLUSION"].data.length === 0 || isInclusionActive || isDuplicated,
       options: criteriaGroupDataMap["EXCLUSION"].data,
     },
   };
@@ -223,7 +224,6 @@ export default function ButtonsForSelection({
                 options={group.options}
                 isDisabled={group.isDisabled}
                 handlerUpdateCriteriasStructure={handlerUpdateCriteriasStructure}
-                reloadArticles={reloadArticles}
                 selectedCriteria={historicalCriteria}
               />
             </Box>
