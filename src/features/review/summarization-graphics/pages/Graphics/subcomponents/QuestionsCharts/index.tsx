@@ -138,7 +138,7 @@ export const QuestionsCharts = ({
 
         if (type === "Pie Chart" || type === "Gráfico de Pizza") {
           chartContent = (
-            <PieChart title={`Question ${code}`} labels={labels} data={data} />
+            <PieChart title="" labels={labels} data={data} />
           );
         } else if (type === "Bar Chart" || type === "Gráfico de Barras") {
           chartContent = (
@@ -189,7 +189,7 @@ export const QuestionsCharts = ({
               title=""
               series={series}
               yCategories={yCategories}
-              yaxisText="abc"
+              yaxisText=""
             />
           );
         } else {
@@ -197,11 +197,11 @@ export const QuestionsCharts = ({
         }
 
         return (
-          <Box key={question.questionId} w="100%" display="block">
-            <Text mb={2} ml="2rem" fontWeight="bold" textAlign="left">
+          <Box key={question.questionId} w="100%">
+            <Text mb={2} ml="2rem" fontWeight="bold">
               {description}
             </Text>
-            <Box w="100%" display="block">
+            <Box w="100%">
               {chartContent}
             </Box>
           </Box>

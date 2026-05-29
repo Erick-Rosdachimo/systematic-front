@@ -13,7 +13,7 @@ export default function PieChart({
   title, 
   labels, 
   data, 
-  width = 800, 
+  width = "100%", 
   height = 500 
 } :Props) {
 
@@ -42,8 +42,8 @@ const chartConfig = {
         }
       },
       legend: {
-        position: "right",
-        fontSize: '16px', 
+        position: "bottom",
+        fontSize: '10px', 
         itemMargin: {
           horizontal: 10,
           vertical: 15 
